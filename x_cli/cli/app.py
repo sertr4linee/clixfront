@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 from rich.console import Console
@@ -42,7 +42,7 @@ app.add_typer(auth_app, name="auth")
 @auth_app.command("status")
 def auth_status(
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """Check authentication status."""
     try:
@@ -69,7 +69,9 @@ def auth_status(
 
 @auth_app.command("login")
 def auth_login(
-    browser: Annotated[Optional[str], typer.Option(help="Browser: chrome, firefox, edge, brave")] = None,
+    browser: Annotated[
+        str | None, typer.Option(help="Browser: chrome, firefox, edge, brave")
+    ] = None,
     account: Annotated[str, typer.Option(help="Account name")] = "default",
 ):
     """Extract cookies from browser and save."""
@@ -88,7 +90,9 @@ def auth_login(
 
 @auth_app.command("set")
 def auth_set(
-    auth_token: Annotated[str, typer.Option("--token", help="auth_token cookie value", prompt=True)],
+    auth_token: Annotated[
+        str, typer.Option("--token", help="auth_token cookie value", prompt=True)
+    ],
     ct0: Annotated[str, typer.Option("--ct0", help="ct0 cookie value", prompt=True)],
     account: Annotated[str, typer.Option(help="Account name")] = "default",
 ):
@@ -154,7 +158,7 @@ def config_cmd(
 def bookmarks_cmd(
     count: Annotated[int, typer.Option("--count", "-n", help="Number of tweets")] = 20,
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """View your bookmarks."""
     from x_cli.core.api import get_bookmarks
@@ -177,10 +181,10 @@ def bookmarks_cmd(
 @app.command("post")
 def post(
     text: Annotated[str, typer.Argument(help="Tweet text")],
-    reply_to: Annotated[Optional[str], typer.Option("--reply-to", help="Tweet ID to reply to")] = None,
-    quote: Annotated[Optional[str], typer.Option("--quote", help="Tweet URL to quote")] = None,
+    reply_to: Annotated[str | None, typer.Option("--reply-to", help="Tweet ID to reply to")] = None,
+    quote: Annotated[str | None, typer.Option("--quote", help="Tweet URL to quote")] = None,
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """Post a new tweet."""
     from x_cli.core.api import create_tweet
@@ -198,7 +202,7 @@ def post(
 def like(
     tweet_id: Annotated[str, typer.Argument(help="Tweet ID")],
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """Like a tweet."""
     from x_cli.core.api import like_tweet
@@ -216,7 +220,7 @@ def like(
 def unlike(
     tweet_id: Annotated[str, typer.Argument(help="Tweet ID")],
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """Unlike a tweet."""
     from x_cli.core.api import unlike_tweet
@@ -234,7 +238,7 @@ def unlike(
 def rt(
     tweet_id: Annotated[str, typer.Argument(help="Tweet ID")],
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """Retweet a tweet."""
     from x_cli.core.api import retweet
@@ -252,7 +256,7 @@ def rt(
 def unrt(
     tweet_id: Annotated[str, typer.Argument(help="Tweet ID")],
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """Undo a retweet."""
     from x_cli.core.api import unretweet
@@ -270,7 +274,7 @@ def unrt(
 def bm(
     tweet_id: Annotated[str, typer.Argument(help="Tweet ID")],
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """Bookmark a tweet."""
     from x_cli.core.api import bookmark_tweet
@@ -288,7 +292,7 @@ def bm(
 def unbm(
     tweet_id: Annotated[str, typer.Argument(help="Tweet ID")],
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """Remove a bookmark."""
     from x_cli.core.api import unbookmark_tweet
@@ -306,7 +310,7 @@ def unbm(
 def delete(
     tweet_id: Annotated[str, typer.Argument(help="Tweet ID to delete")],
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
     force: Annotated[bool, typer.Option("--force", "-f", help="Skip confirmation")] = False,
 ):
     """Delete a tweet."""
@@ -330,6 +334,7 @@ def delete(
 # Register sub-command groups (must be after app definition, import at bottom
 # to avoid circular imports)
 # =============================================================================
+
 
 def _register_subcommands() -> None:
     """Register subcommand groups."""

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 
@@ -23,7 +23,7 @@ def user_profile(
     ctx: typer.Context,
     handle: Annotated[str, typer.Argument(help="Twitter handle (without @)")],
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """View a user's profile."""
     if ctx.invoked_subcommand is not None:
@@ -52,7 +52,7 @@ def user_tweets(
     count: Annotated[int, typer.Option("--count", "-n", help="Number of tweets")] = 20,
     replies: Annotated[bool, typer.Option("--replies", help="Include replies")] = False,
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """View a user's tweets."""
     from x_cli.core.api import get_user_by_handle, get_user_tweets
@@ -78,7 +78,7 @@ def user_likes(
     handle: Annotated[str, typer.Argument(help="Twitter handle")],
     count: Annotated[int, typer.Option("--count", "-n", help="Number of tweets")] = 20,
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """View a user's liked tweets."""
     from x_cli.core.api import get_user_by_handle, get_user_likes
@@ -104,7 +104,7 @@ def user_followers(
     handle: Annotated[str, typer.Argument(help="Twitter handle")],
     count: Annotated[int, typer.Option("--count", "-n", help="Number of users")] = 20,
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """View a user's followers."""
     from x_cli.core.api import get_followers, get_user_by_handle
@@ -130,7 +130,7 @@ def user_following(
     handle: Annotated[str, typer.Argument(help="Twitter handle")],
     count: Annotated[int, typer.Option("--count", "-n", help="Number of users")] = 20,
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """View who a user follows."""
     from x_cli.core.api import get_following, get_user_by_handle

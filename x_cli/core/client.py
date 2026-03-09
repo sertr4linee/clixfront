@@ -6,7 +6,6 @@ import json
 import os
 import random
 from typing import Any
-from urllib.parse import quote, urlencode
 
 from curl_cffi import requests as curl_requests
 
@@ -21,11 +20,14 @@ from x_cli.core.constants import (
 )
 from x_cli.utils.rate_limit import backoff_delay, delay, write_delay
 
-
 # Chrome versions for impersonation
 CHROME_VERSIONS = [
-    "chrome120", "chrome123", "chrome124",
-    "chrome126", "chrome127", "chrome131",
+    "chrome120",
+    "chrome123",
+    "chrome124",
+    "chrome126",
+    "chrome127",
+    "chrome131",
     "chrome133a",
 ]
 

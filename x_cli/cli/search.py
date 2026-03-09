@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 
@@ -22,7 +22,7 @@ def search(
     count: Annotated[int, typer.Option("--count", "-n", help="Number of tweets")] = 20,
     pages: Annotated[int, typer.Option("--pages", "-p", help="Number of pages")] = 1,
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """Search for tweets."""
     if ctx.invoked_subcommand is not None:

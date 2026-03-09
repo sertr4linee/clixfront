@@ -8,7 +8,12 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from x_cli.core.constants import CONFIG_DIR_NAME, CONFIG_FILE_NAME, DEFAULT_COUNT, DEFAULT_DELAY_SECONDS
+from x_cli.core.constants import (
+    CONFIG_DIR_NAME,
+    CONFIG_FILE_NAME,
+    DEFAULT_COUNT,
+    DEFAULT_DELAY_SECONDS,
+)
 
 
 def get_config_dir() -> Path:

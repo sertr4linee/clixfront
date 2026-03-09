@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from rich.console import Console
 from rich.panel import Panel
@@ -20,9 +20,9 @@ def _relative_time(dt: datetime | None) -> str:
     """Format a datetime as relative time (e.g., '2h ago')."""
     if dt is None:
         return ""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=timezone.utc)
+        dt = dt.replace(tzinfo=UTC)
     diff = now - dt
     seconds = int(diff.total_seconds())
 

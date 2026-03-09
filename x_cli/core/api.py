@@ -160,9 +160,11 @@ def get_tweet_detail(client: XClient, tweet_id: str) -> list[Tweet]:
 
     # Parse threaded conversation
     tweets: list[Tweet] = []
-    instructions = data.get("data", {}).get(
-        "threaded_conversation_with_injections_v2", {}
-    ).get("instructions", [])
+    instructions = (
+        data.get("data", {})
+        .get("threaded_conversation_with_injections_v2", {})
+        .get("instructions", [])
+    )
 
     for instruction in instructions:
         for entry in instruction.get("entries", []):

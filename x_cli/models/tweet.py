@@ -97,10 +97,7 @@ class Tweet(BaseModel):
                 replies=legacy.get("reply_count", 0),
                 quotes=legacy.get("quote_count", 0),
                 bookmarks=legacy.get("bookmark_count", 0),
-                views=int(
-                    tweet_data.get("views", {}).get("count", 0)
-                    or 0
-                ),
+                views=int(tweet_data.get("views", {}).get("count", 0) or 0),
             )
 
             # Parse media

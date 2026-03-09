@@ -25,8 +25,7 @@ def output_json(data: object) -> None:
         data = data.model_dump(mode="json")  # type: ignore[union-attr]
     elif isinstance(data, list):
         data = [
-            item.model_dump(mode="json") if hasattr(item, "model_dump") else item
-            for item in data
+            item.model_dump(mode="json") if hasattr(item, "model_dump") else item for item in data
         ]
     print(json.dumps(data, indent=2, default=str))
 

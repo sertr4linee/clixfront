@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from typing import Annotated, Optional
+from typing import Annotated
 
 import typer
 
 from x_cli.cli.helpers import get_client, is_json_mode, output_json
-from x_cli.display.formatter import format_thread, format_tweet, console
+from x_cli.display.formatter import console, format_thread, format_tweet
 
 tweet_app = typer.Typer(no_args_is_help=False, invoke_without_command=True)
 
@@ -18,7 +18,7 @@ def tweet(
     tweet_id: Annotated[str, typer.Argument(help="Tweet ID")],
     thread: Annotated[bool, typer.Option("--thread", help="Show full thread")] = False,
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
-    account: Annotated[Optional[str], typer.Option(help="Account name")] = None,
+    account: Annotated[str | None, typer.Option(help="Account name")] = None,
 ):
     """View a tweet and its thread."""
     if ctx.invoked_subcommand is not None:

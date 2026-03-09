@@ -75,9 +75,9 @@ class User(BaseModel):
                 tweet_count=legacy.get("statuses_count", 0),
                 listed_count=legacy.get("listed_count", 0),
                 created_at=created_at,
-                profile_image_url=legacy.get(
-                    "profile_image_url_https", ""
-                ).replace("_normal", "_400x400"),
+                profile_image_url=legacy.get("profile_image_url_https", "").replace(
+                    "_normal", "_400x400"
+                ),
                 profile_banner_url=legacy.get("profile_banner_url", ""),
                 pinned_tweet_id=pinned[0] if pinned else None,
             )
