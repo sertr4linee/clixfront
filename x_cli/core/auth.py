@@ -97,6 +97,51 @@ def save_auth(creds: AuthCredentials, account: str | None = None) -> None:
     auth_file.chmod(0o600)
 
 
+def import_cookies_from_file(file_path: str) -> AuthCredentials | None:
+    """Import cookies from a Cookie Editor JSON export file.
+
+    Supports Cookie Editor format: list of {name, value, domain, ...}
+    """
+    path = Path(file_path)
+    if not path.exists():
+        return None
+
+    try:
+        raw = json.loads(path.read_text())
+
+        # Cookie Editor exports a list of cookie objects
+        if isinstance(raw, list):
+            cookies = {}
+            for cookie in raw:
+                name = cookie.get("name", "")
+                value = cookie.get("value", "")
+                domain = cookie.get("domain", "")
+                # Only keep twitter/x cookies
+                if (
+                    ".x.com" in domain
+                    or ".twitter.com" in domain
+                    or domain
+                    in (
+                        "x.com",
+                        "twitter.com",
+                    )
+                ):
+                    cookies[name] = value
+
+            auth_token = cookies.get("auth_token", "")
+            ct0 = cookies.get("ct0", "")
+
+            if auth_token and ct0:
+                return AuthCredentials(
+                    auth_token=auth_token,
+                    ct0=ct0,
+                    cookies=cookies,
+                )
+        return None
+    except (json.JSONDecodeError, Exception):
+        return None
+
+
 def list_accounts() -> list[str]:
     """List all stored account names."""
     auth_file = get_auth_file()

@@ -14,6 +14,7 @@ from x_cli.core.auth import (
     AuthError,
     extract_cookies_from_browser,
     get_credentials,
+    import_cookies_from_file,
     list_accounts,
     save_auth,
     set_default_account,
@@ -84,6 +85,25 @@ def auth_login(
     else:
         print_error(
             "Could not extract cookies. Make sure you're logged into X/Twitter in your browser."
+        )
+        raise typer.Exit(EXIT_AUTH_ERROR)
+
+
+@auth_app.command("import")
+def auth_import(
+    file: Annotated[str, typer.Argument(help="Path to Cookie Editor JSON export")],
+    account: Annotated[str, typer.Option(help="Account name")] = "default",
+):
+    """Import cookies from a Cookie Editor JSON export file."""
+    creds = import_cookies_from_file(file)
+
+    if creds and creds.is_valid:
+        save_auth(creds, account)
+        print_success(f"Imported cookies! Saved as account '{account}'")
+    else:
+        print_error(
+            "Could not find auth_token/ct0 in the file. "
+            "Make sure you exported cookies from x.com with Cookie Editor."
         )
         raise typer.Exit(EXIT_AUTH_ERROR)
 
