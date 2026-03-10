@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
-import random
 from typing import Any
 
 from curl_cffi import requests as curl_requests
@@ -13,23 +13,25 @@ from clix.core.auth import AuthCredentials, AuthError, get_credentials
 from clix.core.constants import (
     BASE_URL,
     BEARER_TOKEN,
-    DEFAULT_FEATURES,
     DEFAULT_FIELD_TOGGLES,
     GRAPHQL_BASE,
-    GRAPHQL_ENDPOINTS,
+    SEC_CH_UA_ARCH,
+    SEC_CH_UA_BITNESS,
+    SEC_CH_UA_MOBILE,
+    SEC_CH_UA_MODEL,
+    SEC_CH_UA_PLATFORM_VERSION,
+    best_chrome_target,
+    get_accept_language,
+    get_sec_ch_ua,
+    get_sec_ch_ua_full_version_list,
+    get_sec_ch_ua_platform,
+    get_user_agent,
+    sync_chrome_version,
 )
+from clix.core.endpoints import get_graphql_endpoints, get_op_features, invalidate_cache
 from clix.utils.rate_limit import backoff_delay, delay, write_delay
 
-# Chrome versions for impersonation
-CHROME_VERSIONS = [
-    "chrome120",
-    "chrome123",
-    "chrome124",
-    "chrome126",
-    "chrome127",
-    "chrome131",
-    "chrome133a",
-]
+logger = logging.getLogger(__name__)
 
 
 class APIError(Exception):
@@ -43,6 +45,10 @@ class APIError(Exception):
 
 class RateLimitError(APIError):
     """Raised when rate limited."""
+
+
+class StaleEndpointError(APIError):
+    """Raised when a GraphQL endpoint returns 404 (stale operation ID)."""
 
 
 class XClient:
@@ -68,10 +74,12 @@ class XClient:
 
     @property
     def session(self) -> curl_requests.Session:
-        """Get or create HTTP session."""
+        """Get or create HTTP session with Chrome impersonation."""
         if self._session is None:
-            impersonate = random.choice(CHROME_VERSIONS)
-            self._session = curl_requests.Session(impersonate=impersonate)
+            target = best_chrome_target()
+            sync_chrome_version(target)
+            logger.debug("curl_cffi impersonating %s", target)
+            self._session = curl_requests.Session(impersonate=target)
 
             if self._proxy:
                 self._session.proxies = {
@@ -81,7 +89,7 @@ class XClient:
         return self._session
 
     def _get_headers(self) -> dict[str, str]:
-        """Build request headers."""
+        """Build browser-like request headers for API calls."""
         creds = self.credentials
         return {
             "authorization": f"Bearer {BEARER_TOKEN}",
@@ -92,6 +100,23 @@ class XClient:
             "content-type": "application/json",
             "referer": f"{BASE_URL}/home",
             "origin": BASE_URL,
+            # Browser identity headers
+            "user-agent": get_user_agent(),
+            "accept": "*/*",
+            "accept-language": get_accept_language(),
+            # Client Hints — required by Cloudflare to pass bot detection
+            "sec-ch-ua": get_sec_ch_ua(),
+            "sec-ch-ua-mobile": SEC_CH_UA_MOBILE,
+            "sec-ch-ua-platform": get_sec_ch_ua_platform(),
+            "sec-ch-ua-arch": SEC_CH_UA_ARCH,
+            "sec-ch-ua-bitness": SEC_CH_UA_BITNESS,
+            "sec-ch-ua-full-version-list": get_sec_ch_ua_full_version_list(),
+            "sec-ch-ua-model": SEC_CH_UA_MODEL,
+            "sec-ch-ua-platform-version": SEC_CH_UA_PLATFORM_VERSION,
+            # Fetch metadata — browsers always send these on XHR/fetch
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
         }
 
     def _get_cookies(self) -> dict[str, str]:
@@ -145,6 +170,11 @@ class XClient:
                         "Forbidden — account may be suspended or action not allowed",
                         status_code=403,
                     )
+                elif response.status_code == 404:
+                    raise StaleEndpointError(
+                        "GraphQL endpoint not found (HTTP 404) — operation IDs may be stale",
+                        status_code=404,
+                    )
                 else:
                     raise APIError(
                         f"API error: HTTP {response.status_code}",
@@ -152,7 +182,7 @@ class XClient:
                         response_data=response.text[:500],
                     )
 
-            except (AuthError, RateLimitError, APIError):
+            except (AuthError, RateLimitError, StaleEndpointError, APIError):
                 raise
             except Exception as e:
                 last_error = e
@@ -162,6 +192,66 @@ class XClient:
 
         raise APIError(f"Request failed after {max_retries} retries: {last_error}")
 
+    def _graphql_request(
+        self,
+        method: str,
+        operation: str,
+        variables: dict[str, Any],
+        features: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Make a GraphQL request with auto-retry on stale endpoint IDs."""
+        resolved_features = features if features is not None else get_op_features(operation)
+
+        for attempt in range(2):
+            endpoints = get_graphql_endpoints()
+            endpoint = endpoints.get(operation)
+            if not endpoint:
+                raise APIError(
+                    f"Unknown GraphQL operation '{operation}' — "
+                    f"not found in {len(endpoints)} extracted operations. "
+                    f"Available: {', '.join(sorted(endpoints.keys()))}"
+                )
+            url = f"{GRAPHQL_BASE}/{endpoint}"
+
+            if method == "GET":
+                kwargs: dict[str, Any] = {
+                    "params": {
+                        "variables": json.dumps(variables),
+                        "features": json.dumps(resolved_features),
+                        "fieldToggles": json.dumps(DEFAULT_FIELD_TOGGLES),
+                    }
+                }
+            else:
+                kwargs = {
+                    "json_data": {
+                        "variables": variables,
+                        "features": resolved_features,
+                        "queryId": endpoint.split("/")[0],
+                    }
+                }
+
+            try:
+                result = self._request(method, url, **kwargs)
+                delay() if method == "GET" else write_delay()
+                return result
+            except StaleEndpointError:
+                if attempt == 0:
+                    logger.warning(
+                        "HTTP 404 for '%s' — operation IDs may be stale, "
+                        "invalidating cache and retrying with fresh IDs",
+                        operation,
+                    )
+                    invalidate_cache()
+                    if features is None:
+                        resolved_features = get_op_features(operation)
+                    continue
+                raise APIError(
+                    f"GraphQL endpoint '{operation}' not found (HTTP 404) "
+                    f"even after cache refresh — X.com may have removed this operation",
+                    status_code=404,
+                )
+        raise APIError(f"Unreachable: _graphql_request retry loop for '{operation}'")
+
     def graphql_get(
         self,
         operation: str,
@@ -169,18 +259,7 @@ class XClient:
         features: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Make a GraphQL GET request."""
-        endpoint = GRAPHQL_ENDPOINTS.get(operation, operation)
-        url = f"{GRAPHQL_BASE}/{endpoint}"
-
-        params = {
-            "variables": json.dumps(variables),
-            "features": json.dumps(features or DEFAULT_FEATURES),
-            "fieldToggles": json.dumps(DEFAULT_FIELD_TOGGLES),
-        }
-
-        result = self._request("GET", url, params=params)
-        delay()
-        return result
+        return self._graphql_request("GET", operation, variables, features)
 
     def graphql_post(
         self,
@@ -189,18 +268,7 @@ class XClient:
         features: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Make a GraphQL POST request (for write operations)."""
-        endpoint = GRAPHQL_ENDPOINTS.get(operation, operation)
-        url = f"{GRAPHQL_BASE}/{endpoint}"
-
-        json_data = {
-            "variables": variables,
-            "features": features or DEFAULT_FEATURES,
-            "queryId": endpoint.split("/")[0],
-        }
-
-        result = self._request("POST", url, json_data=json_data)
-        write_delay()
-        return result
+        return self._graphql_request("POST", operation, variables, features)
 
     def close(self) -> None:
         """Close the HTTP session."""
