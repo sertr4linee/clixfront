@@ -26,3 +26,7 @@
 - Wrap tool bodies in try/except, return `_error_response()` on failure
 - Use `XClient()` context manager directly (auto-resolves credentials)
 - Alias conflicting imports from `core.api` with underscore prefix
+
+## GraphQL API Gotchas
+- **Always check required variables**: Twitter/X GraphQL endpoints may require variables even when they seem optional. Missing variables cause HTTP 422 (e.g., `BookmarkSearchTimeline` requires `search_query: ""` even to list all bookmarks)
+- When adding new endpoints, verify the full variable schema from the extracted operations — don't assume optional fields are truly optional
