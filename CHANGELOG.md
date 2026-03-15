@@ -59,6 +59,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Output mode system unified with `get_output_mode()` helper
 - `XClient` now supports `proxy`, `rest_post()`, `rest_get()`, `graphql_post_raw()` methods
 
+### Fixed
+- Fallback query IDs for operations removed from X.com JS bundles (`SearchTimeline`, `CreateRetweet`, `CreateBookmark`, `DeleteBookmark`)
+- Duplicate `_get_headers()` call dropping `X-Client-Transaction-Id` header
+- `doctor` cookie validation using removed REST endpoint (switched to GraphQL `Viewer`)
+
 ## [0.2.0] - 2026-03-11
 
 ### Added
