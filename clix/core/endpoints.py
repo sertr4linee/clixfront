@@ -31,6 +31,16 @@ from clix.core.constants import (
 
 logger = logging.getLogger(__name__)
 
+# --- Fallback query IDs for operations removed from X.com JS bundles ---
+
+FALLBACK_OPERATIONS: dict[str, str] = {
+    "SearchTimeline": "nK1dw4oV3k4w5TdtcAdSww",
+    "CreateRetweet": "ojPdsZsimiJrUGLR1sjUtA",
+    "DeleteRetweet": "iQtK4dl5hBmXewYZuEOKVw",
+    "CreateBookmark": "aoDbu3RHznuiSkQ9aNM67Q",
+    "DeleteBookmark": "Wlmlj2-xzyS1GN3a6cj-mQ",
+}
+
 # --- Bundle URL patterns ---
 
 _BUNDLE_HREF_PATTERN = re.compile(
@@ -467,9 +477,18 @@ def get_graphql_endpoints() -> dict[str, str]:
     """Get current GraphQL endpoints — from cache or by fetching X.com.
 
     Returns dict mapping operation name to 'queryId/operationName'.
+    Includes fallback entries for operations removed from X.com JS bundles.
     Raises RuntimeError if endpoints cannot be resolved.
     """
-    return _ensure_cache()["endpoints"]
+    endpoints = dict(_ensure_cache()["endpoints"])
+    # Override with fallback query IDs for operations removed from JS bundles.
+    # These take priority because X.com may still emit stale IDs that return 404.
+    for op_name, query_id in FALLBACK_OPERATIONS.items():
+        fallback_endpoint = f"{query_id}/{op_name}"
+        if endpoints.get(op_name) != fallback_endpoint:
+            logger.debug("Using fallback query ID for %s: %s", op_name, query_id)
+        endpoints[op_name] = fallback_endpoint
+    return endpoints
 
 
 def get_features() -> dict[str, bool]:

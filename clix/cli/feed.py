@@ -34,6 +34,12 @@ def feed(
     ] = None,
     top_n: Annotated[int, typer.Option("--top", help="Top N for filter mode")] = 10,
     threshold: Annotated[float, typer.Option("--threshold", help="Score threshold")] = 0.0,
+    compact: Annotated[
+        bool, typer.Option("--compact", "-c", help="Compact JSON output for AI agents")
+    ] = False,
+    full_text: Annotated[
+        bool, typer.Option("--full-text", help="Show full tweet text without truncation")
+    ] = False,
     json_output: Annotated[bool, typer.Option("--json", help="JSON output")] = False,
     yaml_output: Annotated[bool, typer.Option("--yaml", help="YAML output")] = False,
     account: Annotated[str | None, typer.Option(help="Account name")] = None,
@@ -43,6 +49,13 @@ def feed(
         return
 
     validate_output_flags(json_output, yaml_output)
+
+    # Merge local flags with global ctx.obj flags
+    ctx.ensure_object(dict)
+    if compact:
+        ctx.obj["compact"] = True
+    if full_text:
+        ctx.obj["full_text"] = True
 
     from clix.core.api import get_home_timeline
     from clix.utils.filter import filter_tweets
@@ -61,16 +74,16 @@ def feed(
     if filter_mode:
         all_tweets = filter_tweets(all_tweets, mode=filter_mode, top_n=top_n, threshold=threshold)
 
-    compact = is_compact_mode(ctx)
-    if compact and json_output:
+    is_compact = is_compact_mode(ctx)
+    if is_compact and json_output:
         raise typer.BadParameter("--compact and --json are mutually exclusive")
 
-    if compact:
+    if is_compact:
         output_compact(all_tweets)
     elif is_json_mode(json_output):
         output_json([t.to_json_dict() for t in all_tweets])
     elif is_yaml_mode(yaml_output):
         output_yaml([t.to_json_dict() for t in all_tweets])
     else:
-        full_text = ctx.obj.get("full_text", False) if ctx.obj else False
-        format_tweet_list(all_tweets, full_text=full_text)
+        use_full_text = ctx.obj.get("full_text", False) if ctx.obj else False
+        format_tweet_list(all_tweets, full_text=use_full_text)

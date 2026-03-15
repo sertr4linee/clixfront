@@ -973,24 +973,28 @@ def doctor(
 
             with XClient(credentials=creds) as client:
                 start_t = time.monotonic()
-                resp = client.session.get(
-                    "https://api.x.com/1.1/account/verify_credentials.json",
-                    headers=client._get_headers(),
-                    cookies=client._get_cookies(),
-                    timeout=10,
+                result = client.graphql_get(
+                    "Viewer",
+                    {
+                        "withCommunitiesMemberships": False,
+                        "withSubscribedTab": False,
+                        "withCommunitiesCreation": False,
+                    },
                 )
                 elapsed = int((time.monotonic() - start_t) * 1000)
 
-                if resp.status_code == 200:
-                    data = resp.json()
-                    screen_name = data.get("screen_name", "unknown")
-                    _pass("Cookie validation", f"@{screen_name} verified ({elapsed}ms)")
-                elif resp.status_code == 401:
-                    _fail("Cookie validation", "cookies expired or invalid (HTTP 401)")
-                else:
-                    _fail("Cookie validation", f"HTTP {resp.status_code} ({elapsed}ms)")
+                user_id = (
+                    result.get("data", {})
+                    .get("viewer", {})
+                    .get("user_results", {})
+                    .get("result", {})
+                    .get("rest_id", "unknown")
+                )
+                _pass("Cookie validation", f"user {user_id} verified ({elapsed}ms)")
         else:
             _warn("Cookie validation", "no credentials available to validate")
+    except AuthError:
+        _fail("Cookie validation", "cookies expired or invalid")
     except Exception as e:
         _fail("Cookie validation", str(e))
 
@@ -1082,13 +1086,13 @@ def _register_subcommands() -> None:
     from clix.cli.dm import dm_app
     from clix.cli.feed import feed_app
     from clix.cli.lists import lists_app
-    from clix.cli.search import search_app
+    from clix.cli.search import register_search
     from clix.cli.tweet import tweet_app
     from clix.cli.user import user_app
 
     app.add_typer(feed_app, name="feed", help="View your timeline")
     app.add_typer(tweet_app, name="tweet", help="View or manage tweets")
-    app.add_typer(search_app, name="search", help="Search tweets")
+    register_search(app)
     app.add_typer(user_app, name="user", help="View user profiles")
     app.add_typer(lists_app, name="lists", help="Manage lists")
     app.add_typer(dm_app, name="dm", help="Direct messages")

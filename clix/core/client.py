@@ -272,7 +272,6 @@ class XClient:
         self._init_transaction()
 
         headers = self._get_headers(method=method, url=url)
-        headers = self._get_headers()
         if data is not None:
             headers["content-type"] = "application/x-www-form-urlencoded"
         cookies = self._get_cookies()
