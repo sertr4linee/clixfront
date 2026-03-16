@@ -19,6 +19,9 @@ dependencies = [
     "xclienttransaction>=1.0.1",
     "beautifulsoup4>=4.14.3",
     "pyyaml>=6.0.3",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "python-multipart>=0.0.9",
 ]
 keywords = ["twitter", "x", "cli", "terminal"]
 classifiers = [
