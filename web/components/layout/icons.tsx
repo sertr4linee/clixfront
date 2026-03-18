@@ -70,3 +70,11 @@ export function IconX({ size = 24, className }: IconProps) {
     </svg>
   );
 }
+
+export function IconAutomation({ size = 24, className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} className={className} fill="currentColor">
+      <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  );
+}
