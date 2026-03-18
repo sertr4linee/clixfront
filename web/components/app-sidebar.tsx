@@ -24,6 +24,7 @@ import {
   IconCalendar,
   IconMessage,
   IconAnalytics,
+  IconAutomation,
   IconX,
 } from "@/components/layout/icons"
 import { useAuthStatus } from "@/lib/hooks/use-mcp"
@@ -36,6 +37,7 @@ const navItems = [
   { title: "Scheduled", url: "/scheduled", icon: IconCalendar },
   { title: "Messages", url: "/dms", icon: IconMessage },
   { title: "Analytics", url: "/analytics", icon: IconAnalytics },
+  { title: "Automations", url: "/automations", icon: IconAutomation },
 ]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
