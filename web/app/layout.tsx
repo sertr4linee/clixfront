@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { AppSidebar } from "@/components/app-sidebar";
 import { RightPanel } from "@/components/layout/right-panel";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 
-const geist = Geist({ subsets: ["latin"] });
+const font = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
   title: "clix",
@@ -19,8 +23,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${geist.className} bg-background text-foreground antialiased`}>
+    <html lang="en">
+      <body className={`${font.variable} font-sans bg-background text-foreground antialiased`}>
         <Providers>
           <SidebarProvider>
             <AppSidebar />

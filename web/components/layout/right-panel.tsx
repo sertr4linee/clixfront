@@ -14,16 +14,16 @@ export function RightPanel() {
 
   return (
     <aside className="hidden lg:flex w-80 xl:w-96 flex-shrink-0 flex-col py-4 px-4 sticky top-0 h-screen overflow-y-auto">
-      <div className="bg-zinc-900 rounded-2xl p-4">
-        <h2 className="font-bold text-xl mb-4">Trends</h2>
+      <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-4">
+        <h2 className="font-bold text-base text-gray-900 mb-4">Trends</h2>
 
         {isLoading && (
           <div className="space-y-4">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="space-y-1">
-                <Skeleton className="h-3 w-24 bg-zinc-800" />
-                <Skeleton className="h-4 w-36 bg-zinc-800" />
-                <Skeleton className="h-3 w-20 bg-zinc-800" />
+                <Skeleton className="h-3 w-24 bg-gray-100" />
+                <Skeleton className="h-4 w-36 bg-gray-100" />
+                <Skeleton className="h-3 w-20 bg-gray-100" />
               </div>
             ))}
           </div>
@@ -32,16 +32,16 @@ export function RightPanel() {
         {trends?.map((trend, i) => (
           <div
             key={i}
-            className="py-3 border-b border-white/5 last:border-0 cursor-pointer hover:bg-white/5 rounded-lg px-2 -mx-2 transition-colors"
+            className="py-3 border-b border-gray-50 last:border-0 cursor-pointer hover:bg-gray-50 rounded-lg px-2 -mx-2 transition-colors"
           >
             {trend.category && (
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-gray-400">
                 {trend.category} · Trending
               </p>
             )}
-            <p className="font-bold text-sm">{trend.name}</p>
+            <p className="font-semibold text-sm text-gray-900">{trend.name}</p>
             {trend.tweet_count && (
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-gray-400">
                 {Number(trend.tweet_count).toLocaleString()} posts
               </p>
             )}
@@ -49,7 +49,7 @@ export function RightPanel() {
         ))}
 
         {!isLoading && !trends?.length && (
-          <p className="text-zinc-500 text-sm">No trends available</p>
+          <p className="text-gray-400 text-sm">No trends available</p>
         )}
       </div>
     </aside>

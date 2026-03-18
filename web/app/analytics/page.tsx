@@ -11,10 +11,10 @@ const HOUR_LABELS = ["12am","3am","6am","9am","12pm","3pm","6pm","9pm"];
 
 function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (
-    <div className="bg-zinc-900 rounded-2xl p-5 flex flex-col gap-1">
-      <p className="text-zinc-500 text-sm">{label}</p>
-      <p className="text-3xl font-bold">{value}</p>
-      {sub && <p className="text-zinc-500 text-xs">{sub}</p>}
+    <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5 flex flex-col gap-1">
+      <p className="text-gray-400 text-sm">{label}</p>
+      <p className="text-3xl font-bold text-gray-900">{value}</p>
+      {sub && <p className="text-gray-400 text-xs">{sub}</p>}
     </div>
   );
 }
@@ -43,12 +43,12 @@ function Heatmap({ heatmap }: { heatmap: Record<string, number> }) {
   const max = Math.max(1, ...Object.values(heatmap));
 
   const cellColor = (count: number) => {
-    if (!count) return "bg-zinc-800";
+    if (!count) return "bg-gray-100";
     const pct = count / max;
-    if (pct < 0.25) return "bg-sky-900";
-    if (pct < 0.5)  return "bg-sky-700";
-    if (pct < 0.75) return "bg-sky-500";
-    return "bg-sky-400";
+    if (pct < 0.25) return "bg-blue-200";
+    if (pct < 0.5)  return "bg-blue-400";
+    if (pct < 0.75) return "bg-blue-500";
+    return "bg-blue-600";
   };
 
   // Month labels
@@ -78,7 +78,7 @@ function Heatmap({ heatmap }: { heatmap: Record<string, number> }) {
             {weeks.map((_, i) => {
               const ml = monthLabels.find((m) => m.col === i);
               return (
-                <div key={i} className="w-[10px] text-[9px] text-zinc-600">
+                <div key={i} className="w-[10px] text-[9px] text-gray-400">
                   {ml?.label ?? ""}
                 </div>
               );
@@ -111,11 +111,11 @@ function Heatmap({ heatmap }: { heatmap: Record<string, number> }) {
 
           {/* Legend */}
           <div className="flex items-center gap-1 mt-1 justify-end">
-            <span className="text-[9px] text-zinc-600">Less</span>
-            {["bg-zinc-800","bg-sky-900","bg-sky-700","bg-sky-500","bg-sky-400"].map((c, i) => (
+            <span className="text-[9px] text-gray-400">Less</span>
+            {["bg-gray-100","bg-blue-200","bg-blue-400","bg-blue-500","bg-blue-600"].map((c, i) => (
               <div key={i} className={cn("w-[10px] h-[10px] rounded-[2px]", c)} />
             ))}
-            <span className="text-[9px] text-zinc-600">More</span>
+            <span className="text-[9px] text-gray-400">More</span>
           </div>
         </div>
       </div>
@@ -287,7 +287,7 @@ export default function AnalyticsPage() {
                   <HourChart distribution={analytics.hourDistribution} bestHour={analytics.bestHour} />
                   <div className="flex justify-between mt-1">
                     {HOUR_LABELS.map((l) => (
-                      <span key={l} className="text-[9px] text-zinc-600">{l}</span>
+                      <span key={l} className="text-[9px] text-gray-400">{l}</span>
                     ))}
                   </div>
                   {analytics.bestHour !== null && (

@@ -10,12 +10,12 @@ import type { Tweet } from "@/types/twitter";
 
 function TweetSkeleton() {
   return (
-    <div className="flex gap-3 px-4 py-3 border-b border-white/10">
-      <Skeleton className="w-10 h-10 rounded-full bg-zinc-800" />
+    <div className="flex gap-3 px-4 py-3 border-b border-gray-100">
+      <Skeleton className="w-10 h-10 rounded-full bg-gray-100" />
       <div className="flex-1 space-y-2">
-        <Skeleton className="h-4 w-32 bg-zinc-800" />
-        <Skeleton className="h-4 w-full bg-zinc-800" />
-        <Skeleton className="h-4 w-3/4 bg-zinc-800" />
+        <Skeleton className="h-4 w-32 bg-gray-100" />
+        <Skeleton className="h-4 w-full bg-gray-100" />
+        <Skeleton className="h-4 w-3/4 bg-gray-100" />
       </div>
     </div>
   );
@@ -43,18 +43,18 @@ export default function FeedPage() {
   return (
     <div>
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-black/80 backdrop-blur border-b border-white/10">
+      <div className="sticky top-0 z-10 bg-white/90 backdrop-blur border-b border-gray-100">
         <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
           <TabsList className="w-full bg-transparent h-14 rounded-none gap-0">
             <TabsTrigger
               value="for-you"
-              className="flex-1 h-full rounded-none text-sm font-medium data-[state=active]:border-b-2 data-[state=active]:border-sky-400 data-[state=active]:text-white data-[state=inactive]:text-zinc-500"
+              className="flex-1 h-full rounded-none text-sm font-medium data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 data-[state=inactive]:text-gray-400"
             >
               For you
             </TabsTrigger>
             <TabsTrigger
               value="following"
-              className="flex-1 h-full rounded-none text-sm font-medium data-[state=active]:border-b-2 data-[state=active]:border-sky-400 data-[state=active]:text-white data-[state=inactive]:text-zinc-500"
+              className="flex-1 h-full rounded-none text-sm font-medium data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 data-[state=inactive]:text-gray-400"
             >
               Following
             </TabsTrigger>
@@ -76,7 +76,7 @@ export default function FeedPage() {
       <div ref={bottomRef} className="py-4 flex justify-center">
         {isFetchingNextPage && <TweetSkeleton />}
         {!hasNextPage && tweets.length > 0 && (
-          <p className="text-zinc-600 text-sm">You&apos;re all caught up</p>
+          <p className="text-gray-400 text-sm">You&apos;re all caught up</p>
         )}
       </div>
     </div>

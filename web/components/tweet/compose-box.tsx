@@ -43,9 +43,9 @@ export function ComposeBox({ placeholder, replyToId, onSuccess, className }: Com
   };
 
   return (
-    <div className={cn("flex gap-3 p-4 border-b border-white/10", className)}>
-      {/* Avatar placeholder */}
-      <div className="w-10 h-10 rounded-full bg-sky-500 flex items-center justify-center text-sm font-bold flex-shrink-0">
+    <div className={cn("flex gap-3 p-4 border-b border-gray-100 bg-white", className)}>
+      {/* Avatar */}
+      <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-sm font-bold flex-shrink-0 text-white">
         ME
       </div>
 
@@ -56,7 +56,7 @@ export function ComposeBox({ placeholder, replyToId, onSuccess, className }: Com
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           placeholder={placeholder ?? "What's happening?"}
-          className="resize-none min-h-[80px] bg-transparent border-0 text-xl placeholder:text-zinc-600 focus-visible:ring-0 p-0 text-white"
+          className="resize-none min-h-[80px] bg-transparent border-0 text-lg placeholder:text-gray-400 focus-visible:ring-0 p-0 text-gray-900"
           rows={2}
         />
 
@@ -64,20 +64,19 @@ export function ComposeBox({ placeholder, replyToId, onSuccess, className }: Com
         <div className="flex items-center justify-between">
           <div />
           <div className="flex items-center gap-3">
-            {/* Char counter */}
             {text.length > 0 && (
               <div className="flex items-center gap-2">
                 <svg viewBox="0 0 32 32" className="w-7 h-7 -rotate-90">
-                  <circle cx="16" cy="16" r="13" fill="none" stroke="#333" strokeWidth="3" />
+                  <circle cx="16" cy="16" r="13" fill="none" stroke="#e5e7eb" strokeWidth="3" />
                   <circle
                     cx="16" cy="16" r="13" fill="none"
-                    stroke={overLimit ? "#f43f5e" : remaining < 20 ? "#f59e0b" : "#1d9bf0"}
+                    stroke={overLimit ? "#f43f5e" : remaining < 20 ? "#f59e0b" : "#3b5bdb"}
                     strokeWidth="3"
                     strokeDasharray={`${Math.min((text.length / MAX_CHARS) * 81.7, 81.7)} 81.7`}
                   />
                 </svg>
                 {remaining < 20 && (
-                  <span className={cn("text-sm", overLimit ? "text-rose-500" : "text-zinc-400")}>
+                  <span className={cn("text-sm", overLimit ? "text-rose-500" : "text-gray-400")}>
                     {remaining}
                   </span>
                 )}
@@ -87,7 +86,7 @@ export function ComposeBox({ placeholder, replyToId, onSuccess, className }: Com
             <Button
               onClick={handleSubmit}
               disabled={isEmpty || overLimit || mutation.isPending}
-              className="rounded-full px-5 font-bold bg-sky-500 hover:bg-sky-400 text-white disabled:opacity-50"
+              className="rounded-full px-5 font-bold bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
             >
               {mutation.isPending ? "Posting…" : replyToId ? "Reply" : "Post"}
             </Button>
@@ -95,7 +94,7 @@ export function ComposeBox({ placeholder, replyToId, onSuccess, className }: Com
         </div>
 
         {mutation.isError && (
-          <p className="text-rose-400 text-sm">{(mutation.error as Error).message}</p>
+          <p className="text-rose-500 text-sm">{(mutation.error as Error).message}</p>
         )}
       </div>
     </div>

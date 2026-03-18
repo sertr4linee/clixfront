@@ -73,10 +73,10 @@ export function TweetCard({ tweet, onReply }: TweetCardProps) {
   };
 
   return (
-    <article className="flex gap-3 px-4 py-3 border-b border-white/10 hover:bg-white/[0.02] transition-colors cursor-pointer group">
+    <article className="flex gap-3 px-4 py-3.5 border-b border-gray-100 hover:bg-gray-50/60 transition-colors cursor-pointer group">
       {/* Retweet label */}
       {tweet.is_retweet && (
-        <div className="col-span-2 flex items-center gap-1 text-xs text-zinc-500 mb-1 -mt-1 pl-12 w-full">
+        <div className="col-span-2 flex items-center gap-1 text-xs text-gray-400 mb-1 -mt-1 pl-12 w-full">
           <Repeat2 size={12} />
           <span>{tweet.retweeted_by} reposted</span>
         </div>
@@ -93,36 +93,36 @@ export function TweetCard({ tweet, onReply }: TweetCardProps) {
         <div className="flex items-center gap-1 flex-wrap">
           <a
             href={`/${tweet.author_handle}`}
-            className="font-bold hover:underline truncate max-w-[140px]"
+            className="font-semibold text-gray-900 hover:underline truncate max-w-[140px]"
             onClick={(e) => e.stopPropagation()}
           >
             {tweet.author_name}
           </a>
           {tweet.author_verified && (
-            <BadgeCheck size={14} className="text-sky-400 flex-shrink-0" />
+            <BadgeCheck size={14} className="text-blue-500 flex-shrink-0" />
           )}
-          <span className="text-zinc-500 text-sm truncate">
+          <span className="text-gray-400 text-sm truncate">
             @{tweet.author_handle}
           </span>
-          <span className="text-zinc-600 text-sm">·</span>
-          <span className="text-zinc-500 text-sm flex-shrink-0">
+          <span className="text-gray-300 text-sm">·</span>
+          <span className="text-gray-400 text-sm flex-shrink-0">
             {formatTime(tweet.created_at)}
           </span>
-          <button className="ml-auto opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-white p-1 rounded-full hover:bg-white/10 transition-all">
+          <button className="ml-auto opacity-0 group-hover:opacity-100 text-gray-400 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100 transition-all">
             <MoreHorizontal size={16} />
           </button>
         </div>
 
         {/* Reply context */}
         {tweet.reply_to_handle && (
-          <p className="text-zinc-500 text-sm">
+          <p className="text-gray-400 text-sm">
             Replying to{" "}
-            <span className="text-sky-400">@{tweet.reply_to_handle}</span>
+            <span className="text-blue-500">@{tweet.reply_to_handle}</span>
           </p>
         )}
 
         {/* Text */}
-        <p className="mt-1 text-[15px] leading-relaxed whitespace-pre-wrap break-words">
+        <p className="mt-1 text-[15px] leading-relaxed whitespace-pre-wrap break-words text-gray-800">
           {tweet.text}
         </p>
 
@@ -155,36 +155,36 @@ export function TweetCard({ tweet, onReply }: TweetCardProps) {
 
         {/* Quoted tweet */}
         {tweet.quoted_tweet && (
-          <div className="mt-3 border border-white/15 rounded-2xl p-3">
-            <div className="flex items-center gap-1 text-sm font-bold">
+          <div className="mt-3 border border-gray-100 rounded-2xl p-3 bg-gray-50">
+            <div className="flex items-center gap-1 text-sm font-semibold">
               <Avatar name={tweet.quoted_tweet.author_name} handle={tweet.quoted_tweet.author_handle} size="sm" />
-              <span className="ml-1">{tweet.quoted_tweet.author_name}</span>
-              <span className="text-zinc-500 font-normal">@{tweet.quoted_tweet.author_handle}</span>
+              <span className="ml-1 text-gray-900">{tweet.quoted_tweet.author_name}</span>
+              <span className="text-gray-400 font-normal">@{tweet.quoted_tweet.author_handle}</span>
             </div>
-            <p className="mt-1 text-sm text-zinc-300 line-clamp-3">
+            <p className="mt-1 text-sm text-gray-600 line-clamp-3">
               {tweet.quoted_tweet.text}
             </p>
           </div>
         )}
 
         {/* Actions */}
-        <div className="flex items-center justify-between mt-3 max-w-xs text-zinc-500">
+        <div className="flex items-center justify-between mt-3 max-w-xs text-gray-400">
           <ActionBtn
-            icon={<MessageCircle size={18} />}
+            icon={<MessageCircle size={17} />}
             count={tweet.engagement.replies}
             onClick={() => onReply?.(tweet)}
-            hoverColor="hover:text-sky-400"
+            hoverColor="hover:text-blue-500"
           />
           <ActionBtn
-            icon={<Repeat2 size={18} />}
+            icon={<Repeat2 size={17} />}
             count={tweet.engagement.retweets}
             active={retweeted}
-            activeColor="text-green-400"
+            activeColor="text-emerald-500"
             onClick={handleRetweet}
-            hoverColor="hover:text-green-400"
+            hoverColor="hover:text-emerald-500"
           />
           <ActionBtn
-            icon={<Heart size={18} className={liked ? "fill-pink-500" : ""} />}
+            icon={<Heart size={17} className={liked ? "fill-pink-500" : ""} />}
             count={tweet.engagement.likes}
             active={liked}
             activeColor="text-pink-500"
@@ -192,12 +192,12 @@ export function TweetCard({ tweet, onReply }: TweetCardProps) {
             hoverColor="hover:text-pink-500"
           />
           <ActionBtn
-            icon={<Bookmark size={18} className={bookmarked ? "fill-sky-400" : ""} />}
+            icon={<Bookmark size={17} className={bookmarked ? "fill-blue-500" : ""} />}
             count={tweet.engagement.bookmarks}
             active={bookmarked}
-            activeColor="text-sky-400"
+            activeColor="text-blue-500"
             onClick={handleBookmark}
-            hoverColor="hover:text-sky-400"
+            hoverColor="hover:text-blue-500"
           />
         </div>
       </div>
