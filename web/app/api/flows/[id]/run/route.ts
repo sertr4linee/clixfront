@@ -69,9 +69,9 @@ function topoSort(flow: FlowFile): string[] {
 }
 
 /** Call OpenAI for AI nodes. */
-async function callOpenAI(config: AIConfig, ctx: FlowContext): Promise<string> {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new Error("OPENAI_API_KEY not set");
+async function callOpenAI(config: AIConfig, ctx: FlowContext, openaiKey?: string): Promise<string> {
+  const apiKey = openaiKey || process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error("OpenAI API key not configured. Set it in the Automations toolbar.");
 
   const prompt = interpolate(config.prompt || "", ctx);
 
@@ -101,7 +101,8 @@ async function callOpenAI(config: AIConfig, ctx: FlowContext): Promise<string> {
 /** Execute a single node. */
 async function executeNode(
   node: FlowNode,
-  ctx: FlowContext
+  ctx: FlowContext,
+  openaiKey?: string
 ): Promise<{ output: unknown; ctx: FlowContext }> {
   const cfg = node.data.config;
   const type = node.data.type;
@@ -169,11 +170,11 @@ async function executeNode(
 
     // ── AI ──
     case "ai-generate": {
-      const text = await callOpenAI(cfg as AIConfig, ctx);
+      const text = await callOpenAI(cfg as AIConfig, ctx, openaiKey);
       return { output: { text }, ctx: { ...ctx, text } };
     }
     case "ai-reply": {
-      const text = await callOpenAI(cfg as AIConfig, ctx);
+      const text = await callOpenAI(cfg as AIConfig, ctx, openaiKey);
       return { output: { text }, ctx: { ...ctx, text } };
     }
 
@@ -214,11 +215,13 @@ async function executeNode(
 }
 
 export async function POST(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const startedAt = new Date().toISOString();
   const { id } = await params;
+  const body = await request.json().catch(() => ({}));
+  const openaiKey: string | undefined = body.openai_key || undefined;
 
   let flow: FlowFile;
   try {
@@ -239,7 +242,7 @@ export async function POST(
 
     const start = Date.now();
     try {
-      const res = await executeNode(node, ctx);
+      const res = await executeNode(node, ctx, openaiKey);
       ctx = res.ctx;
       results.push({
         nodeId,

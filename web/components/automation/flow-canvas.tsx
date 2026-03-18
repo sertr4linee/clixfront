@@ -27,6 +27,7 @@ type FlowCanvasProps = {
   onNodesChange?: (nodes: FlowNode[]) => void;
   onEdgesChange?: (edges: FlowEdge[]) => void;
   onNodeSelect?: (node: FlowNode | null) => void;
+  onNodeDelete?: (nodeId: string) => void;
   onDrop?: (type: string, position: { x: number; y: number }) => void;
 };
 
@@ -35,6 +36,7 @@ function FlowCanvasInner({
   onNodesChange: onNodesChangeCb,
   onEdgesChange: onEdgesChangeCb,
   onNodeSelect,
+  onNodeDelete,
   onDrop,
 }: FlowCanvasProps) {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -61,16 +63,14 @@ function FlowCanvasInner({
 
   const onConnect: OnConnect = useCallback(
     (connection: Connection) => {
-      setEdges((eds) => {
-        const newEdges = addEdge(
-          { ...connection, animated: true, style: { stroke: "#94A3B8" } },
-          eds
-        );
-        onEdgesChangeCb?.(newEdges as FlowEdge[]);
-        return newEdges;
-      });
+      setEdges((eds) => addEdge(
+        { ...connection, animated: true, style: { stroke: "#94A3B8" } },
+        eds
+      ));
+      // Defer: calling parent setState inside setEdges updater triggers "setState during render"
+      setTimeout(() => onEdgesChangeCb?.(edgesRef.current as FlowEdge[]), 0);
     },
-    [setEdges, onEdgesChangeCb]
+    [setEdges, onEdgesChangeCb, edgesRef]
   );
 
   const onNodeClick = useCallback(
@@ -83,6 +83,14 @@ function FlowCanvasInner({
   const onPaneClick = useCallback(() => {
     onNodeSelect?.(null);
   }, [onNodeSelect]);
+
+  const onNodesDelete = useCallback(
+    (deleted: FlowNode[]) => {
+      deleted.forEach((n) => onNodeDelete?.(n.id));
+      setTimeout(() => onNodesChangeCb?.(nodesRef.current as FlowNode[]), 0);
+    },
+    [onNodeDelete, onNodesChangeCb, nodesRef]
+  );
 
   const onDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -132,6 +140,8 @@ function FlowCanvasInner({
         onPaneClick={onPaneClick}
         onDragOver={onDragOver}
         onDrop={handleDrop}
+        onNodesDelete={onNodesDelete}
+        deleteKeyCode={["Delete", "Backspace"]}
         fitView
         className="bg-gray-50"
         defaultEdgeOptions={{ animated: true, style: { stroke: "#94A3B8" } }}

@@ -33,7 +33,7 @@ export function AutomationNode({ data, selected }: NodeProps) {
         <Handle
           type="target"
           position={Position.Top}
-          className="!w-3 !h-3 !border-2 !border-gray-300 !bg-gray-100"
+          className="!w-4 !h-4 !border-2 !border-gray-300 !bg-white hover:!bg-blue-100 hover:!border-blue-400 transition-colors"
         />
       )}
 
@@ -58,7 +58,7 @@ export function AutomationNode({ data, selected }: NodeProps) {
       <Handle
         type="source"
         position={Position.Bottom}
-        className="!w-3 !h-3 !border-2 !border-gray-300 !bg-gray-100"
+        className="!w-4 !h-4 !border-2 !border-gray-300 !bg-white hover:!bg-blue-100 hover:!border-blue-400 transition-colors"
       />
 
       {/* Condition node has a second output for "false" branch */}
@@ -67,7 +67,7 @@ export function AutomationNode({ data, selected }: NodeProps) {
           type="source"
           position={Position.Right}
           id="false"
-          className="!w-3 !h-3 !border-2 !border-red-300 !bg-red-100"
+          className="!w-4 !h-4 !border-2 !border-red-300 !bg-white hover:!bg-red-100 transition-colors"
         />
       )}
     </div>
