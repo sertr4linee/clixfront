@@ -41,6 +41,8 @@ class User(BaseModel):
         """Parse a user from Twitter API GraphQL result."""
         try:
             legacy = result.get("legacy", {})
+            # Twitter API moved name/screen_name from legacy to core in newer responses
+            user_core = result.get("core", {})
             rest_id = result.get("rest_id", "")
 
             if not rest_id:
@@ -64,8 +66,8 @@ class User(BaseModel):
 
             return cls(
                 id=rest_id,
-                name=legacy.get("name", ""),
-                handle=legacy.get("screen_name", ""),
+                name=legacy.get("name") or user_core.get("name", ""),
+                handle=legacy.get("screen_name") or user_core.get("screen_name", ""),
                 bio=legacy.get("description", ""),
                 location=legacy.get("location", ""),
                 website=website,
