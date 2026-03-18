@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef, useState, useEffect } from "react";
 import {
   ReactFlow,
   Controls,
@@ -14,11 +14,83 @@ import {
   addEdge,
   type Connection,
   type OnConnect,
+  type Node,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
 import { AutomationNode } from "./nodes/automation-node";
 import type { FlowNode, FlowEdge, FlowFile, FlowNodeData } from "@/lib/flows/types";
+import { NODE_CATALOGUE, CATEGORY_COLORS, getNodeCategory } from "@/lib/flows/types";
+
+type ContextMenu = {
+  nodeId: string;
+  label: string;
+  x: number;
+  y: number;
+};
+
+function NodeContextMenu({
+  menu,
+  onClose,
+  onDelete,
+  onDuplicate,
+  onConfigure,
+}: {
+  menu: ContextMenu;
+  onClose: () => void;
+  onDelete: (id: string) => void;
+  onDuplicate: (id: string) => void;
+  onConfigure: (id: string) => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as HTMLElement)) onClose();
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [onClose]);
+
+  const items = [
+    { icon: "⚙️", label: "Configure", action: () => { onConfigure(menu.nodeId); onClose(); } },
+    { icon: "⧉", label: "Duplicate", action: () => { onDuplicate(menu.nodeId); onClose(); } },
+    { divider: true },
+    { icon: "🗑", label: "Delete", action: () => { onDelete(menu.nodeId); onClose(); }, danger: true },
+  ];
+
+  return (
+    <div
+      ref={ref}
+      className="fixed z-50 bg-white border border-gray-200 rounded-xl shadow-xl py-1 min-w-[160px] overflow-hidden"
+      style={{ left: menu.x, top: menu.y }}
+    >
+      <div className="px-3 py-1.5 border-b border-gray-100 mb-1">
+        <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider truncate block">
+          {menu.label}
+        </span>
+      </div>
+      {items.map((item, i) =>
+        "divider" in item ? (
+          <div key={i} className="my-1 border-t border-gray-100" />
+        ) : (
+          <button
+            key={i}
+            onClick={item.action}
+            className={`w-full flex items-center gap-2.5 px-3 py-1.5 text-sm transition-colors text-left ${
+              item.danger
+                ? "text-red-600 hover:bg-red-50"
+                : "text-gray-700 hover:bg-gray-50"
+            }`}
+          >
+            <span className="text-base leading-none">{item.icon}</span>
+            <span>{item.label}</span>
+          </button>
+        )
+      )}
+    </div>
+  );
+}
 
 const nodeTypes = { automation: AutomationNode };
 
@@ -28,6 +100,7 @@ type FlowCanvasProps = {
   onEdgesChange?: (edges: FlowEdge[]) => void;
   onNodeSelect?: (node: FlowNode | null) => void;
   onNodeDelete?: (nodeId: string) => void;
+  onNodeDuplicate?: (node: FlowNode) => void;
   onDrop?: (type: string, position: { x: number; y: number }) => void;
 };
 
@@ -37,10 +110,12 @@ function FlowCanvasInner({
   onEdgesChange: onEdgesChangeCb,
   onNodeSelect,
   onNodeDelete,
+  onNodeDuplicate,
   onDrop,
 }: FlowCanvasProps) {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
-  const { screenToFlowPosition } = useReactFlow();
+  const { screenToFlowPosition, deleteElements } = useReactFlow();
+  const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
 
   // Convert flow nodes to have the "automation" type for rendering
   const initialNodes = useMemo(
@@ -82,7 +157,55 @@ function FlowCanvasInner({
 
   const onPaneClick = useCallback(() => {
     onNodeSelect?.(null);
+    setContextMenu(null);
   }, [onNodeSelect]);
+
+  const onNodeContextMenu = useCallback(
+    (e: React.MouseEvent, node: Node) => {
+      e.preventDefault();
+      const flowNode = node as FlowNode;
+      setContextMenu({
+        nodeId: flowNode.id,
+        label: (flowNode.data as FlowNodeData).label,
+        x: e.clientX,
+        y: e.clientY,
+      });
+      onNodeSelect?.(flowNode);
+    },
+    [onNodeSelect]
+  );
+
+  const handleContextDelete = useCallback(
+    (nodeId: string) => {
+      deleteElements({ nodes: [{ id: nodeId }] });
+      onNodeDelete?.(nodeId);
+      setTimeout(() => onNodesChangeCb?.(nodesRef.current as FlowNode[]), 50);
+    },
+    [deleteElements, onNodeDelete, onNodesChangeCb]
+  );
+
+  const handleContextDuplicate = useCallback(
+    (nodeId: string) => {
+      const source = nodesRef.current.find((n) => n.id === nodeId) as FlowNode | undefined;
+      if (!source) return;
+      const duplicate: FlowNode = {
+        ...source,
+        id: `${source.id}-copy-${Date.now()}`,
+        position: { x: source.position.x + 40, y: source.position.y + 40 },
+        data: { ...(source.data as FlowNodeData) },
+      };
+      onNodeDuplicate?.(duplicate);
+    },
+    [onNodeDuplicate]
+  );
+
+  const handleContextConfigure = useCallback(
+    (nodeId: string) => {
+      const node = nodesRef.current.find((n) => n.id === nodeId) as FlowNode | undefined;
+      if (node) onNodeSelect?.(node);
+    },
+    [onNodeSelect]
+  );
 
   const onNodesDelete = useCallback(
     (deleted: FlowNode[]) => {
@@ -138,6 +261,7 @@ function FlowCanvasInner({
         onConnect={onConnect}
         onNodeClick={onNodeClick}
         onPaneClick={onPaneClick}
+        onNodeContextMenu={onNodeContextMenu}
         onDragOver={onDragOver}
         onDrop={handleDrop}
         onNodesDelete={onNodesDelete}
@@ -154,6 +278,16 @@ function FlowCanvasInner({
         />
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#CBD5E1" />
       </ReactFlow>
+
+      {contextMenu && (
+        <NodeContextMenu
+          menu={contextMenu}
+          onClose={() => setContextMenu(null)}
+          onDelete={handleContextDelete}
+          onDuplicate={handleContextDuplicate}
+          onConfigure={handleContextConfigure}
+        />
+      )}
     </div>
   );
 }

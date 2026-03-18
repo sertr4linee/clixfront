@@ -186,6 +186,18 @@ export default function AutomationsPage() {
     [persistFlow]
   );
 
+  // Handle node duplicate from context menu
+  const handleNodeDuplicate = useCallback(
+    (duplicate: FlowNode) => {
+      const flow = activeFlowRef.current;
+      if (!flow) return;
+      const updated = { ...flow, nodes: [...flow.nodes, duplicate] };
+      setActiveFlow(updated);
+      persistFlow({ nodes: updated.nodes });
+    },
+    [persistFlow]
+  );
+
   const handleNodesChange = useCallback((nodes: FlowNode[]) => {
     setActiveFlow((f) => (f ? { ...f, nodes } : f));
   }, []);
@@ -286,6 +298,7 @@ export default function AutomationsPage() {
               onEdgesChange={handleEdgesChange}
               onNodeSelect={setSelectedNode}
               onNodeDelete={handleNodeDelete}
+              onNodeDuplicate={handleNodeDuplicate}
               onDrop={handleDrop}
             />
           ) : (
