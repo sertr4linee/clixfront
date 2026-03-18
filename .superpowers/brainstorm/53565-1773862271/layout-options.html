@@ -1,0 +1,113 @@
+<h2>Quelle direction UI on prend pour clix ?</h2>
+<p class="subtitle">Objectif : light mode, sidebar proche d'Opentweet, sans entrée Home, et une refonte large des pages principales.</p>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">A — Presque clone Opentweet</div>
+        <div class="mockup-body" style="display:grid;grid-template-columns:220px 1fr;min-height:280px;background:#f8fafc">
+          <div style="border-right:1px solid #e5e7eb;padding:18px;display:flex;flex-direction:column;gap:18px;background:#fff">
+            <div style="font-weight:800;font-size:20px">clix</div>
+            <div class="label">Navigation</div>
+            <div style="display:grid;gap:10px">
+              <div style="padding:12px 14px;border-radius:14px;background:#f1f5f9;font-weight:600">Analytics</div>
+              <div style="padding:12px 14px">Review Later</div>
+              <div style="padding:12px 14px">Communities</div>
+            </div>
+            <div class="label">Tools</div>
+            <div style="display:grid;gap:10px;color:#64748b">
+              <div>Automations</div>
+              <div>Scheduled</div>
+              <div>Lists</div>
+              <div>Messages</div>
+            </div>
+          </div>
+          <div style="padding:18px">
+            <div style="height:44px;border:1px solid #bfdbfe;background:#eff6ff;border-radius:14px;margin-bottom:16px"></div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+              <div class="placeholder" style="height:88px;border-radius:18px"></div>
+              <div class="placeholder" style="height:88px;border-radius:18px"></div>
+              <div class="placeholder" style="height:88px;border-radius:18px"></div>
+            </div>
+            <div class="placeholder" style="height:160px;border-radius:22px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Très fidèle à Opentweet</h3>
+      <p>Look premium SaaS, sections en sidebar, grosses cartes blanches, accent bleu doux partout.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">B — Opentweet adapté à clix</div>
+        <div class="mockup-body" style="display:grid;grid-template-columns:236px 1fr 300px;min-height:280px;background:#f8fafc">
+          <div style="border-right:1px solid #e5e7eb;padding:18px;background:#fff">
+            <div style="font-weight:800;font-size:20px;margin-bottom:18px">clix</div>
+            <div class="label">Navigation</div>
+            <div style="display:grid;gap:8px;margin:10px 0 18px">
+              <div style="padding:10px 12px;border-radius:14px;background:#eef2ff;font-weight:600;color:#1e3a8a">Feed</div>
+              <div style="padding:10px 12px">Analytics</div>
+              <div style="padding:10px 12px">Search</div>
+            </div>
+            <div class="label">Tools</div>
+            <div style="display:grid;gap:8px;color:#64748b">
+              <div>Scheduled</div>
+              <div>Automations</div>
+              <div>Lists</div>
+            </div>
+          </div>
+          <div style="padding:18px">
+            <div style="display:flex;gap:12px;margin-bottom:16px">
+              <div class="placeholder" style="height:88px;flex:1;border-radius:18px"></div>
+              <div class="placeholder" style="height:88px;flex:1;border-radius:18px"></div>
+            </div>
+            <div class="placeholder" style="height:200px;border-radius:22px"></div>
+          </div>
+          <div style="padding:18px;border-left:1px solid #e5e7eb;background:#fcfcfd">
+            <div class="placeholder" style="height:80px;border-radius:18px;margin-bottom:12px"></div>
+            <div class="placeholder" style="height:80px;border-radius:18px;margin-bottom:12px"></div>
+            <div class="placeholder" style="height:80px;border-radius:18px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Recommandé</h3>
+      <p>Très proche d'Opentweet, mais garde les patterns utiles de clix comme le panneau droit sur certaines pages.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image">
+      <div class="mockup">
+        <div class="mockup-header">C — Light mode plus produit</div>
+        <div class="mockup-body" style="display:grid;grid-template-columns:220px 1fr;min-height:280px;background:linear-gradient(180deg,#f8fafc,#eef2ff)">
+          <div style="padding:18px;background:#f8fafc;border-right:1px solid #e2e8f0">
+            <div style="font-weight:800;font-size:20px;margin-bottom:18px">clix</div>
+            <div style="display:grid;gap:8px">
+              <div style="padding:12px 14px;border-radius:999px;background:#dbeafe;color:#1d4ed8;font-weight:700">Overview</div>
+              <div style="padding:12px 14px;border-radius:999px;background:#fff">Analytics</div>
+              <div style="padding:12px 14px;border-radius:999px;background:#fff">Automations</div>
+            </div>
+          </div>
+          <div style="padding:18px">
+            <div style="height:120px;border-radius:24px;background:#111827;margin-bottom:16px"></div>
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px">
+              <div class="placeholder" style="height:144px;border-radius:22px"></div>
+              <div class="placeholder" style="height:144px;border-radius:22px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Plus libre</h3>
+      <p>Moins clone, plus moderne produit. Toujours light, mais moins proche de tes screenshots.</p>
+    </div>
+  </div>
+</div>
