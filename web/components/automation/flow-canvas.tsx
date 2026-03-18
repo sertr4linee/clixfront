@@ -9,6 +9,8 @@ import {
   BackgroundVariant,
   useNodesState,
   useEdgesState,
+  useReactFlow,
+  ReactFlowProvider,
   addEdge,
   type Connection,
   type OnConnect,
@@ -28,7 +30,7 @@ type FlowCanvasProps = {
   onDrop?: (type: string, position: { x: number; y: number }) => void;
 };
 
-export function FlowCanvas({
+function FlowCanvasInner({
   flow,
   onNodesChange: onNodesChangeCb,
   onEdgesChange: onEdgesChangeCb,
@@ -36,6 +38,7 @@ export function FlowCanvas({
   onDrop,
 }: FlowCanvasProps) {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
+  const { screenToFlowPosition } = useReactFlow();
 
   // Convert flow nodes to have the "automation" type for rendering
   const initialNodes = useMemo(
@@ -60,7 +63,7 @@ export function FlowCanvas({
     (connection: Connection) => {
       setEdges((eds) => {
         const newEdges = addEdge(
-          { ...connection, animated: true, style: { stroke: "#666" } },
+          { ...connection, animated: true, style: { stroke: "#94A3B8" } },
           eds
         );
         onEdgesChangeCb?.(newEdges as FlowEdge[]);
@@ -90,23 +93,19 @@ export function FlowCanvas({
     (e: React.DragEvent) => {
       e.preventDefault();
       const type = e.dataTransfer.getData("application/reactflow");
-      if (!type || !reactFlowWrapper.current) return;
-
-      const bounds = reactFlowWrapper.current.getBoundingClientRect();
-      const position = {
-        x: e.clientX - bounds.left - 80,
-        y: e.clientY - bounds.top - 20,
-      };
+      if (!type) return;
+      // Use React Flow's screenToFlowPosition for accurate coordinate conversion
+      // regardless of zoom/pan state
+      const position = screenToFlowPosition({ x: e.clientX, y: e.clientY });
       onDrop?.(type, position);
     },
-    [onDrop]
+    [onDrop, screenToFlowPosition]
   );
 
   // Notify parent of node changes for saving
   const wrappedNodesChange = useCallback(
     (changes: Parameters<typeof handleNodesChange>[0]) => {
       handleNodesChange(changes);
-      // Defer to get updated nodes
       setTimeout(() => onNodesChangeCb?.(nodesRef.current as FlowNode[]), 0);
     },
     [handleNodesChange, onNodesChangeCb]
@@ -134,7 +133,7 @@ export function FlowCanvas({
         onDragOver={onDragOver}
         onDrop={handleDrop}
         fitView
-        className="bg-gray-50/95"
+        className="bg-gray-50"
         defaultEdgeOptions={{ animated: true, style: { stroke: "#94A3B8" } }}
       >
         <Controls className="!bg-white !border-gray-200 !shadow-md [&_button]:!bg-white [&_button]:!border-gray-200 [&_button]:!text-gray-600 [&_button:hover]:!bg-gray-50" />
@@ -146,6 +145,14 @@ export function FlowCanvas({
         <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#CBD5E1" />
       </ReactFlow>
     </div>
+  );
+}
+
+export function FlowCanvas(props: FlowCanvasProps) {
+  return (
+    <ReactFlowProvider>
+      <FlowCanvasInner {...props} />
+    </ReactFlowProvider>
   );
 }
 
