@@ -298,9 +298,9 @@ export default function AutomationsPage() {
                       {r.error}
                     </span>
                   )}
-                  {r.output && (
+                  {r.output != null && (
                     <span className="text-zinc-500 truncate ml-2">
-                      {JSON.stringify(r.output).slice(0, 80)}
+                      {String(JSON.stringify(r.output)).slice(0, 80)}
                     </span>
                   )}
                 </div>

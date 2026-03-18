@@ -94,9 +94,7 @@ export function ConfigPanel({ node, onConfigChange }: ConfigPanelProps) {
               placeholder="Use {{text}} for AI output"
               multiline
             />
-            {(data.type === "action-dm" ||
-              data.type === "action-follow" ||
-              data.type === "action-unfollow") && (
+            {data.type === "action-dm" && (
               <Field
                 label="Handle"
                 value={(config as ActionConfig).handle || ""}
@@ -106,15 +104,14 @@ export function ConfigPanel({ node, onConfigChange }: ConfigPanelProps) {
             )}
           </>
         )}
-        {(data.type === "action-follow" || data.type === "action-unfollow") &&
-          data.type !== "action-dm" && (
-            <Field
-              label="Handle"
-              value={(config as ActionConfig).handle || ""}
-              onChange={(v) => update({ handle: v })}
-              placeholder="username or {{tweet.author_handle}}"
-            />
-          )}
+        {(data.type === "action-follow" || data.type === "action-unfollow") && (
+          <Field
+            label="Handle"
+            value={(config as ActionConfig).handle || ""}
+            onChange={(v) => update({ handle: v })}
+            placeholder="username or {{tweet.author_handle}}"
+          />
+        )}
 
         {/* AI configs */}
         {(data.type === "ai-generate" || data.type === "ai-reply") && (
@@ -162,7 +159,7 @@ export function ConfigPanel({ node, onConfigChange }: ConfigPanelProps) {
               <select
                 className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-1.5 text-sm text-white"
                 value={(config as ConditionConfig).operator || "contains"}
-                onChange={(e) => update({ operator: e.target.value })}
+                onChange={(e) => update({ operator: e.target.value as ConditionConfig["operator"] })}
               >
                 <option value="equals">equals</option>
                 <option value="contains">contains</option>
