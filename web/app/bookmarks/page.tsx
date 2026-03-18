@@ -26,26 +26,26 @@ export default function BookmarksPage() {
 
   return (
     <div>
-      <div className="sticky top-0 z-10 bg-black/80 backdrop-blur border-b border-white/10 px-4 h-14 flex items-center">
+      <div className="sticky top-0 z-10 bg-white/90 backdrop-blur border-b border-gray-100 px-4 h-14 flex items-center">
         <h1 className="text-xl font-bold">Bookmarks</h1>
       </div>
 
       {isLoading && (
         Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="flex gap-3 px-4 py-3 border-b border-white/10">
-            <Skeleton className="w-10 h-10 rounded-full bg-zinc-800" />
+          <div key={i} className="flex gap-3 px-4 py-3 border-b border-gray-100">
+            <Skeleton className="w-10 h-10 rounded-full bg-gray-100" />
             <div className="flex-1 space-y-2">
-              <Skeleton className="h-4 w-32 bg-zinc-800" />
-              <Skeleton className="h-4 w-full bg-zinc-800" />
+              <Skeleton className="h-4 w-32 bg-gray-100" />
+              <Skeleton className="h-4 w-full bg-gray-100" />
             </div>
           </div>
         ))
       )}
 
       {!isLoading && tweets.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-20 text-zinc-500">
+        <div className="flex flex-col items-center justify-center py-20 text-gray-400">
           <Bookmark size={40} className="mb-4 opacity-30" />
-          <p className="font-semibold text-white">Save posts for later</p>
+          <p className="font-semibold text-gray-900">Save posts for later</p>
           <p className="text-sm mt-1">Bookmarked posts will appear here.</p>
         </div>
       )}
@@ -55,9 +55,9 @@ export default function BookmarksPage() {
       ))}
 
       <div ref={bottomRef} className="py-4 flex justify-center">
-        {isFetchingNextPage && <Skeleton className="h-4 w-20 bg-zinc-800" />}
+        {isFetchingNextPage && <Skeleton className="h-4 w-20 bg-gray-100" />}
         {!hasNextPage && tweets.length > 0 && (
-          <p className="text-zinc-600 text-sm">End of bookmarks</p>
+          <p className="text-gray-400 text-sm">End of bookmarks</p>
         )}
       </div>
     </div>

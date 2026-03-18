@@ -188,7 +188,7 @@ export default function AutomationsPage() {
   );
 
   return (
-    <div className="flex h-[calc(100vh-0px)] bg-zinc-950">
+    <div className="flex h-[calc(100vh-0px)] bg-gray-50">
       {/* Left: flow list + node palette */}
       <NodePanel
         flows={flows}
@@ -201,14 +201,14 @@ export default function AutomationsPage() {
       {/* Center: canvas + toolbar + exec log */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Toolbar */}
-        <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-sm">
+        <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100 bg-white/80 backdrop-blur-sm">
           <div className="flex items-center gap-3">
             <h1 className="text-sm font-semibold text-white">
               {activeFlow?.name || "Automations"}
             </h1>
             {activeFlow && (
               <input
-                className="bg-transparent border-b border-zinc-700 text-sm text-zinc-300 outline-none px-1 w-40"
+                className="bg-transparent border-b border-gray-200 text-sm text-gray-700 outline-none px-1 w-40"
                 value={activeFlow.name}
                 onChange={(e) => {
                   setActiveFlow((f) =>
@@ -221,7 +221,7 @@ export default function AutomationsPage() {
           </div>
           <div className="flex items-center gap-2">
             {saving && (
-              <span className="text-[10px] text-zinc-500">Saving…</span>
+              <span className="text-[10px] text-gray-400">Saving…</span>
             )}
             <Button
               size="sm"
@@ -247,7 +247,7 @@ export default function AutomationsPage() {
               onDrop={handleDrop}
             />
           ) : (
-            <div className="flex items-center justify-center h-full text-zinc-600">
+            <div className="flex items-center justify-center h-full text-gray-400">
               <div className="text-center">
                 <p className="text-lg mb-2">⚡</p>
                 <p className="text-sm">
@@ -260,13 +260,13 @@ export default function AutomationsPage() {
 
         {/* Execution log drawer */}
         {execLog && (
-          <div className="border-t border-zinc-800 bg-zinc-950 max-h-48 overflow-y-auto">
-            <div className="flex items-center justify-between px-4 py-2 border-b border-zinc-800/50">
-              <span className="text-xs font-medium text-zinc-300">
+          <div className="border-t border-gray-100 bg-white max-h-48 overflow-y-auto">
+            <div className="flex items-center justify-between px-4 py-2 border-b border-gray-100">
+              <span className="text-xs font-medium text-gray-700">
                 Execution Log
               </span>
               <button
-                className="text-xs text-zinc-500 hover:text-zinc-300"
+                className="text-xs text-gray-400 hover:text-gray-700"
                 onClick={() => setExecLog(null)}
               >
                 ✕
@@ -281,7 +281,7 @@ export default function AutomationsPage() {
                       ? "bg-green-500/10 text-green-400"
                       : r.status === "error"
                         ? "bg-red-500/10 text-red-400"
-                        : "bg-zinc-800 text-zinc-500"
+                        : "bg-gray-100 text-gray-400"
                   }`}
                 >
                   <span>
@@ -292,14 +292,14 @@ export default function AutomationsPage() {
                         : "—"}
                   </span>
                   <span className="font-mono">{r.nodeId}</span>
-                  <span className="text-zinc-600">{r.durationMs}ms</span>
+                  <span className="text-gray-400">{r.durationMs}ms</span>
                   {r.error && (
                     <span className="text-red-300 truncate ml-2">
                       {r.error}
                     </span>
                   )}
                   {r.output != null && (
-                    <span className="text-zinc-500 truncate ml-2">
+                    <span className="text-gray-400 truncate ml-2">
                       {String(JSON.stringify(r.output)).slice(0, 80)}
                     </span>
                   )}

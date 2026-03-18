@@ -66,7 +66,7 @@ function Heatmap({ heatmap }: { heatmap: Record<string, number> }) {
         {/* Day labels */}
         <div className="flex flex-col gap-[3px] justify-around mr-1">
           {["","Mon","","Wed","","Fri",""].map((d, i) => (
-            <div key={i} className="h-[10px] text-[9px] text-zinc-600 leading-none w-6 text-right">
+            <div key={i} className="h-[10px] text-[9px] text-gray-400 leading-none w-6 text-right">
               {d}
             </div>
           ))}
@@ -100,7 +100,7 @@ function Heatmap({ heatmap }: { heatmap: Record<string, number> }) {
                       title={d ? `${key}: ${count} post${count !== 1 ? "s" : ""}` : ""}
                       className={cn(
                         "w-[10px] h-[10px] rounded-[2px] transition-colors",
-                        isFuture ? "bg-zinc-900" : cellColor(count)
+                        isFuture ? "bg-gray-50" : cellColor(count)
                       )}
                     />
                   );
@@ -137,7 +137,7 @@ function HourChart({ distribution, bestHour }: { distribution: number[]; bestHou
           <div
             className={cn(
               "w-full rounded-t transition-all",
-              h === bestHour ? "bg-sky-400" : "bg-zinc-700"
+              h === bestHour ? "bg-blue-500" : "bg-gray-200"
             )}
             style={{ height: `${(v / max) * 100}%`, minHeight: v ? 2 : 0 }}
           />
@@ -155,10 +155,10 @@ function WeekdayChart({ distribution }: { distribution: number[] }) {
       {DAYS.map((day, i) => (
         <div key={i} className="flex-1 flex flex-col items-center gap-1">
           <div
-            className="w-full rounded-t bg-sky-500 transition-all"
+            className="w-full rounded-t bg-blue-400 transition-all"
             style={{ height: `${(distribution[i] / max) * 100}%`, minHeight: distribution[i] ? 2 : 0 }}
           />
-          <span className="text-[10px] text-zinc-500">{day}</span>
+          <span className="text-[10px] text-gray-400">{day}</span>
         </div>
       ))}
     </div>
@@ -183,28 +183,28 @@ export default function AnalyticsPage() {
   return (
     <div>
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-black/80 backdrop-blur border-b border-white/10 px-4 h-14 flex items-center">
+      <div className="sticky top-0 z-10 bg-white/90 backdrop-blur border-b border-gray-100 px-4 h-14 flex items-center">
         <h1 className="text-xl font-bold">Analytics</h1>
       </div>
 
       {/* Handle input */}
-      <div className="p-6 border-b border-white/10">
-        <p className="text-zinc-500 text-sm mb-3">Enter your X handle to see analytics</p>
+      <div className="p-6 border-b border-gray-100">
+        <p className="text-gray-400 text-sm mb-3">Enter your X handle to see analytics</p>
         <div className="flex gap-2">
-          <div className="flex items-center gap-2 bg-zinc-900 rounded-full px-4 py-2 flex-1 border border-zinc-800 focus-within:border-sky-500 transition-colors">
-            <span className="text-zinc-500">@</span>
+          <div className="flex items-center gap-2 bg-gray-50 rounded-full px-4 py-2 flex-1 border border-gray-200 focus-within:border-blue-500 transition-colors">
+            <span className="text-gray-400">@</span>
             <input
               value={handle}
               onChange={(e) => setHandle(e.target.value.replace("@", ""))}
               onKeyDown={(e) => { if (e.key === "Enter" && handle) setSubmitted(true); }}
               placeholder={authData?.account ?? "handle"}
-              className="flex-1 bg-transparent outline-none text-white placeholder:text-zinc-600"
+              className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-400"
             />
           </div>
           <button
             onClick={() => handle && setSubmitted(true)}
             disabled={!handle || isLoading}
-            className="px-5 py-2 rounded-full bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm transition-colors disabled:opacity-40"
+            className="px-5 py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-colors disabled:opacity-40"
           >
             {isLoading ? "Loading…" : "Analyze"}
           </button>
@@ -215,14 +215,14 @@ export default function AnalyticsPage() {
       {isLoading && (
         <div className="p-6 grid grid-cols-2 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-24 rounded-2xl bg-zinc-900" />
+            <Skeleton key={i} className="h-24 rounded-2xl bg-gray-100" />
           ))}
         </div>
       )}
 
       {/* No data */}
       {noData && (
-        <div className="flex flex-col items-center justify-center py-20 text-zinc-500 text-sm">
+        <div className="flex flex-col items-center justify-center py-20 text-gray-400 text-sm">
           <p>No tweets found for @{handle}</p>
         </div>
       )}
@@ -255,13 +255,13 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Activity heatmap */}
-          <div className="bg-zinc-900 rounded-2xl p-5">
+          <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
             <h2 className="font-bold mb-4">Activity</h2>
             <Heatmap heatmap={analytics.heatmap} />
           </div>
 
           {/* Engagement */}
-          <div className="bg-zinc-900 rounded-2xl p-5">
+          <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
             <h2 className="font-bold mb-4">Avg Engagement</h2>
             <div className="grid grid-cols-4 gap-3">
               {[
@@ -272,7 +272,7 @@ export default function AnalyticsPage() {
               ].map(({ label, value }) => (
                 <div key={label} className="text-center">
                   <p className="text-2xl font-bold">{value}</p>
-                  <p className="text-xs text-zinc-500 mt-0.5">{label}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{label}</p>
                 </div>
               ))}
             </div>
@@ -280,7 +280,7 @@ export default function AnalyticsPage() {
 
           {/* Best time to post */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-zinc-900 rounded-2xl p-5">
+            <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
               <h2 className="font-bold mb-3 text-sm">Best Hour</h2>
               {analytics.totalPosts >= 3 ? (
                 <>
@@ -291,42 +291,42 @@ export default function AnalyticsPage() {
                     ))}
                   </div>
                   {analytics.bestHour !== null && (
-                    <p className="text-sky-400 text-sm font-semibold mt-2">
+                    <p className="text-blue-600 text-sm font-semibold mt-2">
                       {analytics.bestHour}:00 – {analytics.bestHour + 1}:00
                     </p>
                   )}
                 </>
               ) : (
-                <p className="text-zinc-500 text-xs">Post at least 3 times to see patterns</p>
+                <p className="text-gray-400 text-xs">Post at least 3 times to see patterns</p>
               )}
             </div>
 
-            <div className="bg-zinc-900 rounded-2xl p-5">
+            <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
               <h2 className="font-bold mb-3 text-sm">Best Day</h2>
               {analytics.totalPosts >= 3 ? (
                 <>
                   <WeekdayChart distribution={analytics.weekdayDistribution} />
                   {analytics.bestDay !== null && (
-                    <p className="text-sky-400 text-sm font-semibold mt-2">
+                    <p className="text-blue-600 text-sm font-semibold mt-2">
                       {DAYS[analytics.bestDay]}
                     </p>
                   )}
                 </>
               ) : (
-                <p className="text-zinc-500 text-xs">Post at least 3 times to see patterns</p>
+                <p className="text-gray-400 text-xs">Post at least 3 times to see patterns</p>
               )}
             </div>
           </div>
 
           {/* Top tweets */}
           {analytics.topTweets.length > 0 && (
-            <div className="bg-zinc-900 rounded-2xl p-5">
+            <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-5">
               <h2 className="font-bold mb-4">Top Posts</h2>
               <div className="space-y-4">
                 {analytics.topTweets.map((tweet) => (
-                  <div key={tweet.id} className="border-b border-white/5 last:border-0 pb-4 last:pb-0">
+                  <div key={tweet.id} className="border-b border-gray-50 last:border-0 pb-4 last:pb-0">
                     <p className="text-sm leading-relaxed line-clamp-2">{tweet.text}</p>
-                    <div className="flex gap-4 mt-2 text-xs text-zinc-500">
+                    <div className="flex gap-4 mt-2 text-xs text-gray-400">
                       <span>❤️ {tweet.engagement.likes.toLocaleString()}</span>
                       <span>🔁 {tweet.engagement.retweets.toLocaleString()}</span>
                       <span>💬 {tweet.engagement.replies.toLocaleString()}</span>

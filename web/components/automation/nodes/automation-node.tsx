@@ -22,9 +22,9 @@ export function AutomationNode({ data, selected }: NodeProps) {
   return (
     <div
       className={`
-        rounded-xl border-2 bg-zinc-900/95 backdrop-blur-sm px-4 py-3 min-w-[160px]
-        shadow-lg transition-all duration-150
-        ${selected ? "ring-2 ring-white/30 scale-105" : "hover:ring-1 hover:ring-white/10"}
+        rounded-xl border-2 bg-white px-4 py-3 min-w-[160px]
+        shadow-sm transition-all duration-150
+        ${selected ? "ring-2 ring-blue-500/30 scale-105 shadow-md" : "hover:ring-1 hover:ring-gray-200 hover:shadow-md"}
       `}
       style={{ borderColor: color }}
     >
@@ -33,22 +33,22 @@ export function AutomationNode({ data, selected }: NodeProps) {
         <Handle
           type="target"
           position={Position.Top}
-          className="!w-3 !h-3 !border-2 !border-zinc-700 !bg-zinc-500"
+          className="!w-3 !h-3 !border-2 !border-gray-300 !bg-gray-100"
         />
       )}
 
       <div className="flex items-center gap-2">
         <span
           className="flex items-center justify-center w-7 h-7 rounded-lg text-sm"
-          style={{ backgroundColor: color + "22", color }}
+          style={{ backgroundColor: color + "18", color }}
         >
           {CATEGORY_ICONS[category]}
         </span>
         <div className="flex-1 min-w-0">
-          <div className="text-xs font-medium text-zinc-300 truncate">
+          <div className="text-xs font-semibold text-gray-700 truncate">
             {nodeData.label}
           </div>
-          <div className="text-[10px] text-zinc-500 truncate capitalize">
+          <div className="text-[10px] text-gray-400 truncate capitalize">
             {category}
           </div>
         </div>
@@ -58,7 +58,7 @@ export function AutomationNode({ data, selected }: NodeProps) {
       <Handle
         type="source"
         position={Position.Bottom}
-        className="!w-3 !h-3 !border-2 !border-zinc-700 !bg-zinc-500"
+        className="!w-3 !h-3 !border-2 !border-gray-300 !bg-gray-100"
       />
 
       {/* Condition node has a second output for "false" branch */}
@@ -67,7 +67,7 @@ export function AutomationNode({ data, selected }: NodeProps) {
           type="source"
           position={Position.Right}
           id="false"
-          className="!w-3 !h-3 !border-2 !border-red-700 !bg-red-500"
+          className="!w-3 !h-3 !border-2 !border-red-300 !bg-red-100"
         />
       )}
     </div>

@@ -42,16 +42,16 @@ export default function ListsPage() {
   return (
     <div className="flex h-screen">
       {/* Lists sidebar */}
-      <div className="w-64 flex-shrink-0 border-r border-white/10 flex flex-col">
-        <div className="sticky top-0 bg-black/80 backdrop-blur border-b border-white/10 px-4 h-14 flex items-center">
+      <div className="w-64 flex-shrink-0 border-r border-gray-100 flex flex-col">
+        <div className="sticky top-0 bg-white/90 backdrop-blur border-b border-gray-100 px-4 h-14 flex items-center">
           <h1 className="text-xl font-bold">Lists</h1>
         </div>
 
         <div className="flex-1 overflow-y-auto">
           {listsLoading && (
             Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="p-4 border-b border-white/10">
-                <Skeleton className="h-4 w-32 bg-zinc-800" />
+              <div key={i} className="p-4 border-b border-gray-100">
+                <Skeleton className="h-4 w-32 bg-gray-100" />
               </div>
             ))
           )}
@@ -61,20 +61,20 @@ export default function ListsPage() {
               key={list.id}
               onClick={() => setSelectedList(list)}
               className={cn(
-                "w-full text-left p-4 border-b border-white/10 hover:bg-white/5 transition-colors",
-                selectedList?.id === list.id && "bg-white/5 border-l-2 border-l-sky-400"
+                "w-full text-left p-4 border-b border-white/10 hover:bg-gray-50 transition-colors",
+                selectedList?.id === list.id && "bg-blue-50 border-l-2 border-l-blue-500"
               )}
             >
               <p className="font-semibold text-sm">{list.name}</p>
               {list.description && (
-                <p className="text-zinc-500 text-xs mt-0.5 line-clamp-2">{list.description}</p>
+                <p className="text-gray-400 text-xs mt-0.5 line-clamp-2">{list.description}</p>
               )}
-              <p className="text-zinc-600 text-xs mt-1">{list.member_count} members</p>
+              <p className="text-gray-300 text-xs mt-1">{list.member_count} members</p>
             </button>
           ))}
 
           {!listsLoading && !lists?.length && (
-            <div className="flex flex-col items-center justify-center py-12 text-zinc-500 px-4 text-center">
+            <div className="flex flex-col items-center justify-center py-12 text-gray-400 px-4 text-center">
               <List size={32} className="mb-3 opacity-30" />
               <p className="text-sm">No lists yet</p>
             </div>
@@ -85,18 +85,18 @@ export default function ListsPage() {
       {/* Timeline */}
       <div className="flex-1 overflow-y-auto">
         {selectedList && (
-          <div className="sticky top-0 bg-black/80 backdrop-blur border-b border-white/10 px-4 h-14 flex items-center">
+          <div className="sticky top-0 bg-white/90 backdrop-blur border-b border-gray-100 px-4 h-14 flex items-center">
             <h2 className="font-bold">{selectedList.name}</h2>
           </div>
         )}
 
         {timelineLoading && selectedList && (
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex gap-3 px-4 py-3 border-b border-white/10">
-              <Skeleton className="w-10 h-10 rounded-full bg-zinc-800" />
+            <div key={i} className="flex gap-3 px-4 py-3 border-b border-gray-100">
+              <Skeleton className="w-10 h-10 rounded-full bg-gray-100" />
               <div className="flex-1 space-y-2">
-                <Skeleton className="h-4 w-32 bg-zinc-800" />
-                <Skeleton className="h-4 w-full bg-zinc-800" />
+                <Skeleton className="h-4 w-32 bg-gray-100" />
+                <Skeleton className="h-4 w-full bg-gray-100" />
               </div>
             </div>
           ))
@@ -107,11 +107,11 @@ export default function ListsPage() {
         ))}
 
         <div ref={bottomRef} className="py-4 flex justify-center">
-          {isFetchingNextPage && <Skeleton className="h-4 w-20 bg-zinc-800" />}
+          {isFetchingNextPage && <Skeleton className="h-4 w-20 bg-gray-100" />}
         </div>
 
         {!selectedList && !listsLoading && (
-          <div className="flex items-center justify-center h-full text-zinc-500">
+          <div className="flex items-center justify-center h-full text-gray-400">
             <p>Select a list to view its timeline</p>
           </div>
         )}

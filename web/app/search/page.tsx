@@ -42,14 +42,14 @@ export default function SearchPage() {
   return (
     <div>
       {/* Search bar */}
-      <div className="sticky top-0 z-10 bg-black/80 backdrop-blur border-b border-white/10 p-3">
-        <div className="flex items-center gap-3 bg-zinc-900 rounded-full px-4 py-2">
-          <Search size={18} className="text-zinc-500 flex-shrink-0" />
+      <div className="sticky top-0 z-10 bg-white/90 backdrop-blur border-b border-gray-100 p-3">
+        <div className="flex items-center gap-3 bg-gray-100 rounded-full px-4 py-2">
+          <Search size={18} className="text-gray-400 flex-shrink-0" />
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search"
-            className="flex-1 bg-transparent outline-none text-white placeholder:text-zinc-500"
+            className="flex-1 bg-transparent outline-none text-gray-900 placeholder:text-gray-400"
             autoFocus
           />
         </div>
@@ -57,14 +57,14 @@ export default function SearchPage() {
 
       {/* Type tabs */}
       {debouncedQuery && (
-        <div className="border-b border-white/10">
+        <div className="border-b border-gray-100">
           <Tabs value={type} onValueChange={(v) => setType(v as SearchType)}>
             <TabsList className="w-full bg-transparent h-12 rounded-none gap-0">
               {TYPES.map((t) => (
                 <TabsTrigger
                   key={t}
                   value={t}
-                  className="flex-1 h-full rounded-none text-sm data-[state=active]:border-b-2 data-[state=active]:border-sky-400 data-[state=active]:text-white data-[state=inactive]:text-zinc-500"
+                  className="flex-1 h-full rounded-none text-sm data-[state=active]:border-b-2 data-[state=active]:border-blue-600 data-[state=active]:text-blue-600 data-[state=inactive]:text-gray-400"
                 >
                   {t}
                 </TabsTrigger>
@@ -75,7 +75,7 @@ export default function SearchPage() {
       )}
 
       {!debouncedQuery && (
-        <div className="flex flex-col items-center justify-center py-20 text-zinc-500">
+        <div className="flex flex-col items-center justify-center py-20 text-gray-400">
           <Search size={40} className="mb-4 opacity-30" />
           <p>Search for posts, people, or topics</p>
         </div>
@@ -83,11 +83,11 @@ export default function SearchPage() {
 
       {isLoading && debouncedQuery && (
         Array.from({ length: 5 }).map((_, i) => (
-          <div key={i} className="flex gap-3 px-4 py-3 border-b border-white/10">
-            <Skeleton className="w-10 h-10 rounded-full bg-zinc-800" />
+          <div key={i} className="flex gap-3 px-4 py-3 border-b border-gray-100">
+            <Skeleton className="w-10 h-10 rounded-full bg-gray-100" />
             <div className="flex-1 space-y-2">
-              <Skeleton className="h-4 w-32 bg-zinc-800" />
-              <Skeleton className="h-4 w-full bg-zinc-800" />
+              <Skeleton className="h-4 w-32 bg-gray-100" />
+              <Skeleton className="h-4 w-full bg-gray-100" />
             </div>
           </div>
         ))
@@ -98,7 +98,7 @@ export default function SearchPage() {
       ))}
 
       <div ref={bottomRef} className="py-4 flex justify-center">
-        {isFetchingNextPage && <Skeleton className="h-4 w-20 bg-zinc-800" />}
+        {isFetchingNextPage && <Skeleton className="h-4 w-20 bg-gray-100" />}
       </div>
     </div>
   );

@@ -28,8 +28,8 @@ export function ConfigPanel({ node, onConfigChange }: ConfigPanelProps) {
 
   if (!node) {
     return (
-      <div className="w-72 border-l border-zinc-800 flex items-center justify-center bg-zinc-950 h-full">
-        <p className="text-xs text-zinc-600">Select a node to configure</p>
+      <div className="w-72 border-l border-gray-100 flex items-center justify-center bg-white h-full">
+        <p className="text-xs text-gray-400">Select a node to configure</p>
       </div>
     );
   }
@@ -45,17 +45,17 @@ export function ConfigPanel({ node, onConfigChange }: ConfigPanelProps) {
   };
 
   return (
-    <div className="w-72 border-l border-zinc-800 flex flex-col bg-zinc-950 h-full">
+    <div className="w-72 border-l border-gray-100 flex flex-col bg-white h-full">
       {/* Header */}
-      <div className="p-4 border-b border-zinc-800">
+      <div className="p-4 border-b border-gray-100">
         <div className="flex items-center gap-2 mb-1">
           <span
             className="w-3 h-3 rounded-full"
             style={{ backgroundColor: color }}
           />
-          <span className="text-sm font-medium text-white">{data.label}</span>
+          <span className="text-sm font-medium text-gray-900">{data.label}</span>
         </div>
-        <span className="text-[10px] text-zinc-500 uppercase tracking-wider">
+        <span className="text-[10px] text-gray-400 uppercase tracking-wider">
           {category} · {data.type}
         </span>
       </div>
@@ -153,11 +153,11 @@ export function ConfigPanel({ node, onConfigChange }: ConfigPanelProps) {
               placeholder="tweet.text"
             />
             <div>
-              <label className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1 block">
+              <label className="text-[10px] text-gray-400 uppercase tracking-wider mb-1 block">
                 Operator
               </label>
               <select
-                className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-1.5 text-sm text-white"
+                className="w-full bg-gray-50 border border-gray-200 rounded-md px-3 py-1.5 text-sm text-gray-900"
                 value={(config as ConditionConfig).operator || "contains"}
                 onChange={(e) => update({ operator: e.target.value as ConditionConfig["operator"] })}
               >
@@ -185,13 +185,13 @@ export function ConfigPanel({ node, onConfigChange }: ConfigPanelProps) {
         )}
 
         {data.type === "trigger-manual" && (
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-gray-400">
             No configuration needed. Click Run to trigger.
           </p>
         )}
       </div>
 
-      <div className="p-3 border-t border-zinc-800">
+      <div className="p-3 border-t border-gray-100">
         <Button
           size="sm"
           variant="outline"
@@ -222,12 +222,12 @@ function Field({
 }) {
   return (
     <div>
-      <label className="text-[10px] text-zinc-500 uppercase tracking-wider mb-1 block">
+      <label className="text-[10px] text-gray-400 uppercase tracking-wider mb-1 block">
         {label}
       </label>
       {multiline ? (
         <textarea
-          className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-3 py-1.5 text-sm text-white resize-none h-20"
+          className="w-full bg-gray-50 border border-gray-200 rounded-md px-3 py-1.5 text-sm text-gray-900 resize-none h-20"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
@@ -238,7 +238,7 @@ function Field({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="bg-zinc-900 border-zinc-700"
+          className="bg-gray-50 border-gray-200"
         />
       )}
     </div>

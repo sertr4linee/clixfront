@@ -39,14 +39,14 @@ export function NodePanel({
   };
 
   return (
-    <div className="w-60 border-r border-zinc-800 flex flex-col bg-zinc-950 h-full">
+    <div className="w-60 border-r border-gray-100 flex flex-col bg-white h-full">
       {/* Tab bar */}
-      <div className="flex border-b border-zinc-800">
+      <div className="flex border-b border-gray-100">
         <button
           className={`flex-1 py-2.5 text-xs font-medium transition-colors ${
             tab === "flows"
-              ? "text-white border-b-2 border-white"
-              : "text-zinc-500 hover:text-zinc-300"
+              ? "text-gray-900 border-b-2 border-blue-600"
+              : "text-gray-400 hover:text-gray-600"
           }`}
           onClick={() => setTab("flows")}
         >
@@ -55,8 +55,8 @@ export function NodePanel({
         <button
           className={`flex-1 py-2.5 text-xs font-medium transition-colors ${
             tab === "nodes"
-              ? "text-white border-b-2 border-white"
-              : "text-zinc-500 hover:text-zinc-300"
+              ? "text-gray-900 border-b-2 border-blue-600"
+              : "text-gray-400 hover:text-gray-600"
           }`}
           onClick={() => setTab("nodes")}
         >
@@ -81,14 +81,14 @@ export function NodePanel({
                 key={f.id}
                 className={`group flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer text-sm transition-colors ${
                   f.id === activeFlowId
-                    ? "bg-zinc-800 text-white"
-                    : "text-zinc-400 hover:bg-zinc-900 hover:text-zinc-200"
+                    ? "bg-blue-50 text-blue-700"
+                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
                 }`}
                 onClick={() => onSelectFlow(f.id)}
               >
                 <span className="truncate">{f.name}</span>
                 <button
-                  className="opacity-0 group-hover:opacity-100 text-zinc-500 hover:text-red-400 text-xs ml-2"
+                  className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500 text-xs ml-2"
                   onClick={(e) => {
                     e.stopPropagation();
                     onDeleteFlow(f.id);
@@ -99,7 +99,7 @@ export function NodePanel({
               </div>
             ))}
             {flows.length === 0 && (
-              <p className="text-xs text-zinc-600 text-center py-6">
+              <p className="text-xs text-gray-400 text-center py-6">
                 No flows yet
               </p>
             )}
@@ -120,7 +120,7 @@ export function NodePanel({
                     key={entry.type}
                     draggable
                     onDragStart={(e) => onDragStart(e, entry.type)}
-                    className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab active:cursor-grabbing text-sm text-zinc-300 hover:bg-zinc-800/60 transition-colors"
+                    className="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-grab active:cursor-grabbing text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                   >
                     <span
                       className="w-2 h-2 rounded-full flex-shrink-0"

@@ -134,16 +134,16 @@ export function FlowCanvas({
         onDragOver={onDragOver}
         onDrop={handleDrop}
         fitView
-        className="bg-zinc-950"
-        defaultEdgeOptions={{ animated: true, style: { stroke: "#555" } }}
+        className="bg-gray-50/95"
+        defaultEdgeOptions={{ animated: true, style: { stroke: "#94A3B8" } }}
       >
-        <Controls className="!bg-zinc-800 !border-zinc-700 !shadow-lg [&_button]:!bg-zinc-800 [&_button]:!border-zinc-700 [&_button]:!text-zinc-300 [&_button:hover]:!bg-zinc-700" />
+        <Controls className="!bg-white !border-gray-200 !shadow-md [&_button]:!bg-white [&_button]:!border-gray-200 [&_button]:!text-gray-600 [&_button:hover]:!bg-gray-50" />
         <MiniMap
-          className="!bg-zinc-900 !border-zinc-700"
-          nodeColor="#555"
-          maskColor="rgba(0,0,0,0.6)"
+          className="!bg-gray-50 !border-gray-200"
+          nodeColor="#CBD5E1"
+          maskColor="rgba(241,245,249,0.7)"
         />
-        <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#333" />
+        <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#CBD5E1" />
       </ReactFlow>
     </div>
   );
