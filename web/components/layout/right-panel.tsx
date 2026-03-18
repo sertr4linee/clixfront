@@ -1,10 +1,16 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useTrending } from "@/lib/hooks/use-mcp";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const HIDDEN_ROUTES = ["/automations"];
+
 export function RightPanel() {
+  const pathname = usePathname();
   const { data: trends, isLoading } = useTrending();
+
+  if (HIDDEN_ROUTES.some((r) => pathname.startsWith(r))) return null;
 
   return (
     <aside className="hidden lg:flex w-80 xl:w-96 flex-shrink-0 flex-col py-4 px-4 sticky top-0 h-screen overflow-y-auto">
